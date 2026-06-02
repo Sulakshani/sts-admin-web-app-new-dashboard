@@ -1,0 +1,111 @@
+<div class="assigned-complaints-page">
+  <div class="top-nav">
+    <app-navbar></app-navbar>
+  </div>
+
+  <div class="content">
+    <div class="page-header">
+      <h1>Assigned Complaints</h1>
+      <p>Complaints currently assigned to each support role with SLA deadlines.</p>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-state">Loading assigned complaints...</div>
+
+    <div *ngIf="!isLoading && visibleTeams.length === 0" class="empty-state">
+      No assigned complaints found for your role.
+    </div>
+
+    <div *ngFor="let team of visibleTeams" class="team-section">
+      <div class="team-header">
+        <h2>{{ getRoleLabel(team) }}</h2>
+        <span class="count-pill">{{ getComplaintsForTeam(team).length }} complaints</span>
+      </div>
+
+      <p-table
+        [value]="getComplaintsForTeam(team)"
+        [tableStyle]="{'min-width': '62rem'}"
+        styleClass="p-datatable-sm"
+        [paginator]="false">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Complaint ID</th>
+            <th>User</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Escalation Level</th>
+            <th>Deadline</th>
+            <th>Time Remaining</th>
+            <th>Action</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-complaint>
+          <tr>
+            <td>{{ complaint.id }}</td>
+            <td>{{ complaint.name }} ({{ complaint.role }})</td>
+            <td>{{ complaint.category }}</td>
+            <td>{{ complaint.status }}</td>
+            <td>Level {{ complaint.escalation?.current_level || '-' }}</td>
+            <td>{{ formatDate(complaint.escalation?.next_escalation_due) }}</td>
+            <td>
+              <p-tag
+                [value]="getTimeRemaining(complaint.escalation?.next_escalation_due)"
+                [severity]="getDeadlineSeverity(complaint.escalation?.next_escalation_due)">
+              </p-tag>
+            </td>
+            <td>
+              <button
+                class="solve-btn"
+                (click)="solveComplaint(complaint)"
+                [disabled]="!canSolveComplaint(complaint) || solvingComplaintId === complaint.id">
+                {{ solvingComplaintId === complaint.id ? 'Solving...' : 'Solve' }}
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <div *ngIf="!isLoading && visibleSolvedTeams.length > 0" class="solved-wrapper">
+      <div class="page-header solved-header">
+        <h2>Solved Complaints</h2>
+        <p>Complaints that have already been resolved by your assigned team.</p>
+      </div>
+
+      <div *ngFor="let team of visibleSolvedTeams" class="team-section solved-section">
+        <div class="team-header">
+          <h2>{{ getRoleLabel(team) }}</h2>
+          <span class="count-pill solved-pill">{{ getSolvedComplaintsForTeam(team).length }} solved</span>
+        </div>
+
+        <p-table
+          [value]="getSolvedComplaintsForTeam(team)"
+          [tableStyle]="{'min-width': '62rem'}"
+          styleClass="p-datatable-sm"
+          [paginator]="false">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Complaint ID</th>
+              <th>User</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th>Resolved By</th>
+              <th>Resolved Note</th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-complaint>
+            <tr>
+              <td>{{ complaint.id }}</td>
+              <td>{{ complaint.name }} ({{ complaint.role }})</td>
+              <td>{{ complaint.category }}</td>
+              <td><p-tag value="Resolved" severity="success"></p-tag></td>
+              <td>{{ complaint.resolvedBy || '-' }}</td>
+              <td>{{ complaint.activity || '-' }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+</div>

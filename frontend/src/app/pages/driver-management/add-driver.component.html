@@ -1,0 +1,95 @@
+<!-- <div class="add-driver-page">
+  <nav class="back-nav" (click)="goBack()" aria-label="Back">
+    <span class="arrow">‹</span>
+    <span class="label">Back</span>
+  </nav>
+    <div class="page-header">
+      <h2>Add New Driver</h2>
+    </div>
+  
+    <form class="driver-form" #f="ngForm" (ngSubmit)="save()">
+      <div class="form-row">
+        <label>First Name<span class="req">*</span></label>
+        <input type="text" [(ngModel)]="form.first_name" name="first_name" placeholder="e.g., John" required minlength="2"
+          #firstNameModel="ngModel" (input)="onFirstNameChange()"
+          [class.error-input]="validationErrors.first_name && (firstNameModel.dirty || firstNameModel.touched || isFormSubmitted)" />
+        <small class="error" *ngIf="validationErrors.first_name && (firstNameModel.dirty || firstNameModel.touched || isFormSubmitted)">{{ validationErrors.first_name }}</small>
+      </div>
+  
+      <div class="form-row">
+        <label>Last Name<span class="req">*</span></label>
+        <input type="text" [(ngModel)]="form.last_name" name="last_name" placeholder="e.g., Doe" required minlength="2"
+          #lastNameModel="ngModel" (input)="onLastNameChange()"
+          [class.error-input]="validationErrors.last_name && (lastNameModel.dirty || lastNameModel.touched || isFormSubmitted)" />
+        <small class="error" *ngIf="validationErrors.last_name && (lastNameModel.dirty || lastNameModel.touched || isFormSubmitted)">{{ validationErrors.last_name }}</small>
+      </div>
+  
+      <div class="form-row">
+        <label>Email<span class="req">*</span></label>
+        <input type="email" [(ngModel)]="form.email" name="email" placeholder="e.g., john.doe@example.com" required email
+          #emailModel="ngModel" (input)="onEmailChange()"
+          [class.error-input]="validationErrors.email && (emailModel.dirty || emailModel.touched || isFormSubmitted)" />
+        <small class="error" *ngIf="validationErrors.email && (emailModel.dirty || emailModel.touched || isFormSubmitted)">{{ validationErrors.email }}</small>
+      </div>
+  
+      <div class="form-row">
+        <label>Phone<span class="req">*</span></label>
+        <input type="tel" [(ngModel)]="form.phone" name="phone" placeholder="e.g., +977-9841234567" required
+          #phoneModel="ngModel" (input)="onPhoneChange()"
+          [class.error-input]="validationErrors.phone && (phoneModel.dirty || phoneModel.touched || isFormSubmitted)" />
+        <small class="error" *ngIf="validationErrors.phone && (phoneModel.dirty || phoneModel.touched || isFormSubmitted)">{{ validationErrors.phone }}</small>
+      </div>
+  
+      <div class="form-row">
+        <label>License Number<span class="req">*</span></label>
+        <input type="text" [(ngModel)]="form.license_number" name="license_number" placeholder="e.g., LIC123456" required
+          #licenseModel="ngModel" (input)="onLicenseNumberChange()"
+          [class.error-input]="validationErrors.license_number && (licenseModel.dirty || licenseModel.touched || isFormSubmitted)" />
+        <small class="error" *ngIf="validationErrors.license_number && (licenseModel.dirty || licenseModel.touched || isFormSubmitted)">{{ validationErrors.license_number }}</small>
+      </div>
+  
+      <div class="form-row">
+        <label>License Expiry<span class="req">*</span></label>
+        <input type="date" [(ngModel)]="form.license_expiry" name="license_expiry" required
+          #licenseExpiryModel="ngModel" (input)="onLicenseExpiryChange()"
+          [class.error-input]="validationErrors.license_expiry && (licenseExpiryModel.dirty || licenseExpiryModel.touched || isFormSubmitted)" />
+        <small class="error" *ngIf="validationErrors.license_expiry && (licenseExpiryModel.dirty || licenseExpiryModel.touched || isFormSubmitted)">{{ validationErrors.license_expiry }}</small>
+      </div>
+  
+      <div class="form-row">
+        <label>Experience (Years)<span class="req">*</span></label>
+        <input type="number" [(ngModel)]="form.experience_years" name="experience_years" placeholder="e.g., 5" min="0" max="50" required
+          #experienceModel="ngModel" (input)="onExperienceChange()"
+          [class.error-input]="validationErrors.experience_years && (experienceModel.dirty || experienceModel.touched || isFormSubmitted)" />
+        <small class="error" *ngIf="validationErrors.experience_years && (experienceModel.dirty || experienceModel.touched || isFormSubmitted)">{{ validationErrors.experience_years }}</small>
+      </div>
+  
+      <div class="form-row">
+        <label>Assigned Bus ID</label>
+        <input type="text" [(ngModel)]="form.assigned_bus_id" name="assigned_bus_id" placeholder="e.g., BUS001"
+          #busIdModel="ngModel" (input)="onAssignedBusIdChange()"
+          [class.error-input]="validationErrors.assigned_bus_id && (busIdModel.dirty || busIdModel.touched || isFormSubmitted)" />
+        <small class="error" *ngIf="validationErrors.assigned_bus_id && (busIdModel.dirty || busIdModel.touched || isFormSubmitted)">{{ validationErrors.assigned_bus_id }}</small>
+      </div>
+  
+      <div class="form-row">
+        <label>Hire Date<span class="req">*</span></label>
+        <input type="date" [(ngModel)]="form.hire_date" name="hire_date" required
+          #hireDateModel="ngModel" (input)="onHireDateChange()"
+          [class.error-input]="validationErrors.hire_date && (hireDateModel.dirty || hireDateModel.touched || isFormSubmitted)" />
+        <small class="error" *ngIf="validationErrors.hire_date && (hireDateModel.dirty || hireDateModel.touched || isFormSubmitted)">{{ validationErrors.hire_date }}</small>
+      </div>
+  
+      <div class="form-row inline">
+        <label class="checkbox">
+          <input type="checkbox" [(ngModel)]="form.is_active" name="is_active" />
+          <span>Active</span>
+        </label>
+      </div>
+  
+      <div class="form-actions">
+        <button type="button" class="btn secondary" (click)="cancel()">Cancel</button>
+        <button type="submit" class="btn primary" [disabled]="isSubmitting || !isFormValid()">{{ isSubmitting ? 'Saving...' : 'Save' }}</button>
+      </div>
+    </form>
+  </div> -->

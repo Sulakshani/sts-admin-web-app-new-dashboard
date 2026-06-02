@@ -1,0 +1,438 @@
+<div class="bus-container">
+  <div class="top-navigation-row">
+    <div class="app-branding">
+      <div class="logo-circle">
+        <i class="fas fa-bus"></i>
+      </div>
+      <span class="app-name">BusLounge</span>
+    </div>
+    <app-navbar></app-navbar>
+    <div class="header-actions">
+      <button class="icon-btn notification-btn" (click)="toggleNotificationPanel()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+        </svg>
+        <span *ngIf="notificationService.totalPendingCount > 0" class="notification-badge">{{ notificationService.totalPendingCount }}</span>
+      </button>
+      <div class="profile-dropdown-container">
+        <button class="icon-btn profile-btn" (click)="toggleProfileMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </button>
+        <div class="dropdown-menu" *ngIf="showProfileMenu">
+          <a routerLink="/settings" class="dropdown-item">
+            <i class="fas fa-cog"></i> Profile setting
+          </a>
+          <a (click)="logout()" class="dropdown-item">
+            <i class="fas fa-sign-out-alt"></i> Log out
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-header">
+    <div class="header-content">
+      <h2>Bus Management</h2>
+    </div>
+    <div class="header-actions">
+      <button class="add-bus-btn" (click)="addBus()">Add Bus</button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card total-buses">
+      <div class="stat-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h15.75c.621 0 1.125.504 1.125 1.125v4.5A2.25 2.25 0 0118.75 19.5h-13.5a2.25 2.25 0 01-2.25-2.25v-4.125zM3 13.125V9.75A2.25 2.25 0 015.25 7.5h13.5A2.25 2.25 0 0121 9.75v3.375M3 13.125V15a2.25 2.25 0 002.25 2.25M21 13.125V15a2.25 2.25 0 01-2.25 2.25M7.5 7.5V6.75A2.25 2.25 0 019.75 4.5h4.5a2.25 2.25 0 012.25 2.25v.75M7.5 7.5h9M7.5 7.5v1.125M16.5 12h.008v.008H16.5V12z" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ getTotalBuses() }}</div>
+        <div class="stat-title">Total Buses</div>
+      </div>
+    </div>
+    <div class="stat-card active-buses">
+      <div class="stat-icon">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22,4 12,14.01 9,11.01"></polyline></svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ getActiveCount() }}</div>
+        <div class="stat-title">Active</div>
+      </div>
+    </div>
+    <div class="stat-card inactive-buses">
+      <div class="stat-icon">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-pause-circle"><circle cx="12" cy="12" r="10"></circle><line x1="10" y1="15" x2="10" y2="9"></line><line x1="14" y1="15" x2="14" y2="9"></line></svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ getInactiveCount() }}</div>
+        <div class="stat-title">Inactive</div>
+      </div>
+    </div>
+    <div class="stat-card average-capacity">
+      <div class="stat-icon">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-3-3.87"></path><path d="M7 21v-2a4 4 0 0 1 3-3.87"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ getAverageCapacity() }}</div>
+        <div class="stat-title">Average Capacity</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-section">
+    <div class="chart">
+      <div class="chart-header">
+        <h3>Status Overview</h3>
+        <p>Distribution of bus activity</p>
+      </div>
+      <div class="pie-chart">
+        <div class="pie-container">
+          <div class="pie-slice" [style.background]="getBusPieBackground()"></div>
+          <div class="pie-labels">
+            <div class="label active">
+              <span class="color-box active"></span>
+              <span>Active ({{ getActiveCount() }})</span>
+            </div>
+            <div class="label inactive">
+              <span class="color-box inactive"></span>
+              <span>Inactive ({{ getInactiveCount() }})</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart">
+      <div class="chart-header">
+        <h3>Buses by Type</h3>
+        <p>Number of buses per type</p>
+      </div>
+      <div class="bar-chart">
+        <canvas *ngIf="isBrowser" baseChart [data]="barChartData" [options]="barChartOptions" [type]="'bar'"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-filter-container">
+      <div class="search-wrapper">
+        <select class="criteria-dropdown" [(ngModel)]="searchCriteria" (ngModelChange)="onFilterChange()">
+          <option value="bus_number">Bus Number</option>
+          <option value="id">Bus ID</option>
+          <option value="bus_type">Bus Type</option>
+          <option value="total_seats">Total Seats</option>
+          <option value="permit_number">Permit Number</option>
+          <option value="verification_status">Verification Status</option>
+          <option value="fare_per_seat">Approved Fare</option>
+        </select>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()"
+        />
+        <button class="clear-search-btn" (click)="clearSearch()" *ngIf="searchTerm">×</button>
+      </div>
+      <div class="filter-container">
+        <select [(ngModel)]="statusFilter" (change)="onFilterChange()" class="filter-select">
+          <option value="all">All status</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+    </div>
+    <div class="toolbar-actions">
+      <button class="export-btn" (click)="exportHistoryPdf()">Export PDF</button>
+    </div>
+  </div>
+
+  <table class="bus-table">
+    <thead>
+      <tr>
+        <th (click)="onSort('id')" style="cursor: pointer;" title="Click to sort">
+          BusID {{ getSortIcon('id') }}
+        </th>
+        <th (click)="onSort('company_name')" style="cursor: pointer;" title="Click to sort">
+          Company {{ getSortIcon('company_name') }}
+        </th>
+        <th (click)="onSort('business_phone')" style="cursor: pointer;" title="Click to sort">
+          Contact Num {{ getSortIcon('business_phone') }}
+        </th>
+        <th (click)="onSort('permit_number')" style="cursor: pointer;" title="Click to sort">
+          permitNum {{ getSortIcon('permit_number') }}
+        </th>
+        <th (click)="onSort('license_plate')" style="cursor: pointer;" title="Click to sort">
+          Regnum {{ getSortIcon('license_plate') }}
+        </th>
+        <th (click)="onSort('bus_type')" style="cursor: pointer;" title="Click to sort">
+          Type {{ getSortIcon('bus_type') }}
+        </th>
+        <th (click)="onSort('total_seats')" style="cursor: pointer;" title="Click to sort">
+          Seats {{ getSortIcon('total_seats') }}
+        </th>
+        <th (click)="onSort('custom_route_name')" style="cursor: pointer;" title="Click to sort">
+          Route {{ getSortIcon('custom_route_name') }}
+        </th>
+        <th (click)="onSort('fare_per_seat')" style="cursor: pointer;" title="Click to sort">
+          Approved fare  {{ getSortIcon('fare_per_seat') }}
+        </th>
+        <th (click)="onSort('status')" style="cursor: pointer;" title="Click to sort">
+          status {{ getSortIcon('status') }}
+        </th>
+        <th (click)="onSort('owner_verification_status')" style="cursor: pointer;" title="Click to sort">
+          Owner Verification  {{ getSortIcon('owner_verification_status') }}
+        </th>
+        <th (click)="onSort('verification_status')" style="cursor: pointer;" title="Click to sort">
+          Permit Verify (Route Permit Status)  {{ getSortIcon('verification_status') }}
+        </th>
+        <th>Documents</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let bus of filteredBuses">
+        <td>{{ bus.id }}</td>
+        <td>{{ bus.company_name }}</td>
+        <td>{{ bus.business_phone }}</td>
+        <td>{{ bus.permit_number }}</td>
+        <td>{{ bus.license_plate }}</td>
+        <td>{{ bus.bus_type }}</td>
+        <td>{{ bus.total_seats }}</td>
+        <td>{{ bus.custom_route_name }}</td>
+        <td>{{ bus.fare_per_seat }}</td>
+        <td>{{ bus.status }}</td>
+        <td>{{ bus.owner_verification_status }}</td>
+        <td>{{ bus.verification_status }}</td>
+        <td>
+          <div *ngIf="bus.verification_status?.toLowerCase() === 'verified' || bus.verification_status?.toLowerCase() === 'approved'">
+            <div *ngIf="bus.verification_documents && bus.verification_documents.length > 0; else noDocuments">
+              <div *ngFor="let doc of bus.verification_documents; let i = index">
+                <a [href]="doc" target="_blank" class="document-link" title="Open document">
+                  <i class="fas fa-external-link-alt"></i> Document {{ i + 1 }}
+                </a>
+              </div>
+            </div>
+            <ng-template #noDocuments>
+              <span class="no-documents">No documents</span>
+            </ng-template>
+          </div>
+          <span *ngIf="bus.verification_status?.toLowerCase() === 'rejected'" class="no-documents">-</span>
+          <span *ngIf="bus.verification_status?.toLowerCase() === 'pending'" class="no-documents">Pending approval</span>
+        </td>
+        <td>
+          <i class="fas fa-edit action-icon edit-icon" (click)="updateBus(bus)" title="Edit"></i>
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Add Bus Modal -->
+  <div class="add-bus-modal" *ngIf="showAddBusModal" (click)="closeAddBusModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2>Add Bus</h2>
+      <form (ngSubmit)="saveBus()">
+        <div class="form-section">
+          <h3>Bus Owner Details</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+            <div class="form-row">
+              <label>Company</label>
+              <input type="text" [(ngModel)]="newBus.company_name" name="company_name" required />
+            </div>
+            <div class="form-row">
+              <label>NIC Number</label>
+              <input type="text" [(ngModel)]="newBus.identify_or_incorporation_no" name="identify_or_incorporation_no" required />
+            </div>
+            <div class="form-row">
+              <label>Email</label>
+              <input type="email" [(ngModel)]="newBus.business_email" name="business_email" required />
+            </div>
+            <div class="form-row">
+              <label>Contact Num</label>
+              <input type="text" [(ngModel)]="newBus.business_phone" name="business_phone" required />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Bus Details</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+            <div class="form-row">
+              <label>Bus Number</label>
+              <input type="text" [(ngModel)]="newBus.bus_number" name="bus_number" required />
+            </div>
+            <div class="form-row">
+              <label>PermitNum</label>
+              <input type="text" [(ngModel)]="newBus.permit_number" name="permit_number" required />
+            </div>
+            <div class="form-row">
+              <label>RegNum</label>
+              <input type="text" [(ngModel)]="newBus.license_plate" name="license_plate" required />
+            </div>
+            <div class="form-row">
+              <label>Seats</label>
+              <input type="number" [(ngModel)]="newBus.total_seats" name="total_seats" required min="1" />
+            </div>
+            <div class="form-row">
+              <label>Type</label>
+              <select [(ngModel)]="newBus.bus_type" name="bus_type">
+                <option value="Standard">Standard</option>
+                <option value="Normal">Normal</option>
+                <option value="Semi-Luxury">Semi-Luxury</option>
+                <option value="Luxury">Luxury</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>Route </label>
+              <input type="text" [(ngModel)]="newBus.custom_route_name" name="custom_route_name" required />
+            </div>
+            <div class="form-row">
+              <label>Approved Fare</label>
+              <input type="number" [(ngModel)]="newBus.fare_per_seat" name="fare_per_seat" required min="0" />
+            </div>
+            <div class="form-row">
+              <label>Status</label>
+              <div style="display: flex; align-items: center; height: 38px;">
+                <input type="checkbox" [ngModel]="newBus.status.toLowerCase() === 'active'" (ngModelChange)="newBus.status = $event ? 'active' : 'inactive'" name="status" style="width: auto; margin-right: 8px;" /> Active
+              </div>
+            </div>
+            <div class="form-row" style="grid-column: span 3;">
+              <label>Documents</label>
+              <input type="text" [(ngModel)]="newBusDocuments" name="documents" placeholder="Enter Google Drive links separated by commas" />
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" (click)="closeAddBusModal()">Cancel</button>
+          <button type="submit" [disabled]="!isBusFormValid()">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Bus Modal -->
+  <div class="add-bus-modal" *ngIf="showEditBusModal && selectedBus" (click)="closeEditBusModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2>Edit Bus</h2>
+      <form (ngSubmit)="saveEditBus()">
+        <div class="form-section">
+          <h3>Bus Owner Details</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+            <div class="form-row">
+              <label>Company</label>
+              <input type="text" [(ngModel)]="selectedBus.company_name" name="company_name" required />
+            </div>
+            <div class="form-row">
+              <label>NIC Number</label>
+              <input type="text" [(ngModel)]="selectedBus.identify_or_incorporation_no" name="identify_or_incorporation_no" required />
+            </div>
+            <div class="form-row">
+              <label>Email</label>
+              <input type="email" [(ngModel)]="selectedBus.business_email" name="business_email" required />
+            </div>
+            <div class="form-row">
+              <label>Contact Num</label>
+              <input type="text" [(ngModel)]="selectedBus.business_phone" name="business_phone" required />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Bus Details</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+            <div class="form-row">
+              <label>Bus Number</label>
+              <input type="text" [(ngModel)]="selectedBus.bus_number" name="bus_number" required />
+            </div>
+            <div class="form-row">
+              <label>PermitNum</label>
+              <input type="text" [(ngModel)]="selectedBus.permit_number" name="permit_number" required />
+            </div>
+            <div class="form-row">
+              <label>RegNum</label>
+              <input type="text" [(ngModel)]="selectedBus.license_plate" name="license_plate" required />
+            </div>
+            <div class="form-row">
+              <label>Seats</label>
+              <input type="number" [(ngModel)]="selectedBus.total_seats" name="total_seats" required min="1" />
+            </div>
+            <div class="form-row">
+              <label>Type</label>
+              <select [(ngModel)]="selectedBus.bus_type" name="bus_type">
+                <option value="Standard">Standard</option>
+                <option value="Normal">Normal</option>
+                <option value="Semi-Luxury">Semi-Luxury</option>
+                <option value="Luxury">Luxury</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>Route</label>
+              <input type="text" [(ngModel)]="selectedBus.custom_route_name" name="custom_route_name" required />
+            </div>
+            <div class="form-row">
+              <label>Approved Fare</label>
+              <input type="number" [(ngModel)]="selectedBus.fare_per_seat" name="fare_per_seat" required min="0" />
+            </div>
+            <div class="form-row">
+              <label>Status</label>
+              <div style="display: flex; align-items: center; height: 38px;">
+                <input type="checkbox" [ngModel]="selectedBus.status.toLowerCase() === 'active'" (ngModelChange)="selectedBus.status = $event ? 'active' : 'inactive'" name="status" style="width: auto; margin-right: 8px;" /> Active
+              </div>
+            </div>
+            <div class="form-row" style="grid-column: span 3;">
+              <label>Documents</label>
+              <input type="text" [(ngModel)]="selectedBusDocuments" name="documents" placeholder="Enter Google Drive links separated by commas" />
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" (click)="closeEditBusModal()">Cancel</button>
+          <button type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Document Upload Modal -->
+<div class="add-bus-modal" *ngIf="showDocumentModal" (click)="closeDocumentModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h2>Upload Documents for {{ selectedBusForDocuments?.bus_number }}</h2>
+    <form (ngSubmit)="uploadDocuments()">
+      <div class="form-row">
+        <label>Document Type</label>
+        <select [(ngModel)]="selectedDocumentType" name="documentType" required>
+          <option value="">Select Document Type</option>
+          <option value="Registration">Registration Certificate</option>
+          <option value="Insurance">Insurance Document</option>
+          <option value="Permit">Permit Document</option>
+          <option value="Maintenance">Maintenance Record</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Select Files</label>
+        <input type="file" multiple (change)="onFileSelected($event)" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" required />
+      </div>
+      <div *ngIf="selectedFiles.length > 0" class="selected-files">
+        <h4>Selected Files:</h4>
+        <ul>
+          <li *ngFor="let file of selectedFiles; let i = index">
+            {{ file.name }} ({{ (file.size / 1024 / 1024).toFixed(2) }} MB)
+            <button type="button" (click)="removeFile(i)" class="remove-file-btn">×</button>
+          </li>
+        </ul>
+      </div>
+      <div class="form-actions">
+        <button type="button" (click)="closeDocumentModal()">Cancel</button>
+        <button type="submit" [disabled]="selectedFiles.length === 0">Upload</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Notification Panel -->
+<app-notification-panel *ngIf="showNotificationPanel" (close)="closeNotificationPanel()"></app-notification-panel>

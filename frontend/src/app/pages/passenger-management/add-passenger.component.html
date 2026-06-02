@@ -1,0 +1,77 @@
+<!-- <nav class="back-nav" (click)="goBack()" aria-label="Back">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <span>Back</span>
+</nav>
+
+<div class="add-passenger-container">
+  <div class="passenger-form-container">
+    <div class="page-header">
+      <h2>Add a new Passenger</h2>
+    </div>
+
+    <form class="passenger-form" (ngSubmit)="onSubmit()" #passengerForm="ngForm">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="name">Full Name *</label>
+        <input 
+          type="text" 
+          id="name" 
+          name="name" 
+          [(ngModel)]="passenger.name" 
+          required 
+          placeholder="Enter passenger's full name"
+        />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="phone">Phone Number *</label>
+        <input 
+          type="tel" 
+          id="phone" 
+          name="phone" 
+          [(ngModel)]="passenger.phone" 
+          required 
+          placeholder="Enter phone number"
+        />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="email">Email Address *</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          [(ngModel)]="passenger.email" 
+          required 
+          placeholder="Enter email address"
+        />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="nic">NIC Number *</label>
+        <input 
+          type="text" 
+          id="nic" 
+          name="nic" 
+          [(ngModel)]="passenger.nic" 
+          required 
+          placeholder="Enter NIC number"
+        />
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="cancel-btn" (click)="goBack()">Cancel</button>
+      <button type="submit" class="save-btn" [disabled]="!passengerForm.form.valid">Save Passenger</button>
+    </div>
+    </form>
+  </div>
+</div> -->

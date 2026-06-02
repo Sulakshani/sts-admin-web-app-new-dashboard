@@ -1,0 +1,303 @@
+<div class="lounge-booking-container">
+  <div class="top-navigation-row">
+    <div class="app-branding">
+      <div class="logo-circle">
+        <i class="fas fa-couch"></i>
+      </div>
+      <span class="app-name">BusLounge</span>
+    </div>
+    <app-navbar></app-navbar>
+    <div class="header-actions">
+      <button class="icon-btn notification-btn" (click)="toggleNotificationPanel()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+        </svg>
+        <span *ngIf="notificationService.totalPendingCount > 0" class="notification-badge">{{ notificationService.totalPendingCount }}</span>
+      </button>
+      <div class="profile-dropdown-container">
+        <button class="icon-btn profile-btn" (click)="toggleProfileMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </button>
+        <div class="dropdown-menu" *ngIf="showProfileMenu">
+          <a routerLink="/settings" class="dropdown-item">
+            <i class="fas fa-cog"></i> Profile setting
+          </a>
+          <a (click)="logout()" class="dropdown-item">
+            <i class="fas fa-sign-out-alt"></i> Log out
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-header">
+    <div class="header-content">
+      <h2>Lounge Booking Management</h2>
+    </div>
+    <div class="header-actions">
+      <button class="add-btn" (click)="openAddModal()">+ Add Lounge Booking</button>
+    </div>
+  </div>
+
+  <div class="content">
+      <section class="charts">
+        <div class="chart-card">
+          <h3>Payment Status</h3>
+          <div class="bar-chart">
+            <canvas *ngIf="isBrowser" baseChart [data]="barChartData[0]" [options]="barChartOptions" type="bar"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <h3>Booking Status</h3>
+          <div class="bar-chart">
+            <canvas *ngIf="isBrowser" baseChart [data]="barChartData[1]" [options]="barChartOptions" type="bar"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <h3>Revenue by Lounge</h3>
+          <div class="bar-chart">
+            <canvas *ngIf="isBrowser" baseChart [data]="barChartData[2]" [options]="barChartOptions" type="bar"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <section class="toolbar">
+        <div class="filters" style="display: flex; align-items: center; gap: 0.5rem; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div class="search-container">
+              <input type="text" class="search-input" placeholder="Search lounge bookings.."
+                     [(ngModel)]="searchTerm" (input)="applyFilters()"/>
+              <button class="clear-search-btn" *ngIf="searchTerm" (click)="clearSearch()">×</button>
+            </div>
+            <select [(ngModel)]="paymentFilter" (change)="applyFilters()">
+              <option>All</option>
+              <option>paid</option>
+              <option>pending</option>
+              <option>failed</option>
+            </select>
+            <select [(ngModel)]="statusFilter" (change)="applyFilters()">
+              <option>All</option>
+              <option>confirmed</option>
+              <option>pending</option>
+              <option>cancelled</option>
+              <option>completed</option>
+            </select>
+          </div>
+          <button class="export-btn" (click)="exportLoungeBookingHistoryPdf()">Export Lounge Booking History</button>
+        </div>
+      </section>
+
+      <section>
+        <table class="lb-table">
+          <thead>
+            <tr>
+
+              <th (click)="onSort('lounge_booking_id')" style="cursor: pointer;" title="Click to sort">
+                L_Booking id {{ getSortIcon('lounge_booking_id') }}
+              </th>
+              <th (click)="onSort('passenger_name')" style="cursor: pointer;" title="Click to sort">
+                Passenger Name {{ getSortIcon('passenger_name') }}
+              </th>
+              <th (click)="onSort('passenger_phone')" style="cursor: pointer;" title="Click to sort">
+                Passenger Phone {{ getSortIcon('passenger_phone') }}
+              </th>
+              <th (click)="onSort('booking_reference')" style="cursor: pointer;" title="Click to sort">
+                Ref NUM {{ getSortIcon('booking_reference') }}
+              </th>
+              <th (click)="onSort('lounge_name')" style="cursor: pointer;" title="Click to sort">
+                Lounge Name {{ getSortIcon('lounge_name') }}
+              </th>
+              <th (click)="onSort('product_name')" style="cursor: pointer;" title="Click to sort">
+                Market place {{ getSortIcon('product_name') }}
+              </th>
+              <th (click)="onSort('booking_type')" style="cursor: pointer;" title="Click to sort">
+                Booking Type {{ getSortIcon('booking_type') }}
+              </th>
+              <th (click)="onSort('scheduled_arrival')" style="cursor: pointer;" title="Click to sort">
+                Date and Time {{ getSortIcon('scheduled_arrival') }}
+              </th>
+              <th (click)="onSort('pricing_type')" style="cursor: pointer;" title="Click to sort">
+                Duration {{ getSortIcon('pricing_type') }}
+              </th>
+              <th (click)="onSort('number_of_guests')" style="cursor: pointer;" title="Click to sort">
+                No of Guests {{ getSortIcon('number_of_guests') }}
+              </th>
+              <th>Additional features</th>
+              <th (click)="onSort('total_amount')" style="cursor: pointer;" title="Click to sort">
+                Total Amount {{ getSortIcon('total_amount') }}
+              </th>
+              <th (click)="onSort('payment_status')" style="cursor: pointer;" title="Click to sort">
+                Payment Status {{ getSortIcon('payment_status') }}
+              </th>
+              <th (click)="onSort('status')" style="cursor: pointer;" title="Click to sort">
+                Booking Status {{ getSortIcon('status') }}
+              </th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let b of filtered">
+              <td>{{ b.lounge_booking_id }}</td>
+              <td>{{ b.passenger_name || '-' }}</td>
+              <td>{{ b.passenger_phone || '-' }}</td>
+              <td>{{ b.booking_reference || '-' }}</td>
+              <td>{{ b.lounge_name }}</td>
+              <td>{{ b.product_name || '-' }}</td>
+              <td>{{ b.booking_type || '-' }}</td>
+              <td>{{ b.scheduled_arrival | date:'medium' }}</td>
+              <td>{{ b.pricing_type }}</td>
+              <td>{{ b.number_of_guests }}</td>
+              <td>{{ b.selected_amenities?.join(', ') || '-' }}</td>
+              <td>{{ b.total_amount }}</td>
+              <td>
+                <select [ngModel]="b.payment_status" (ngModelChange)="changePaymentStatus(b, $event)" [class]="'status-dropdown ' + b.payment_status.toLowerCase()">
+                  <option value="paid">Paid</option>
+                  <option value="pending">Pending</option>
+                  <option value="failed">Failed</option>
+                </select>
+              </td>
+              <td>
+                <select [ngModel]="b.status" (ngModelChange)="changeBookingStatus(b, $event)" [class]="'status-dropdown ' + b.status.toLowerCase()">
+                  <option value="confirmed">Confirmed</option>
+                  <option value="pending">Pending</option>
+                  <option value="cancelled">Cancelled</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </td>
+              <td class="actions-cell">
+                <i class="fas fa-edit action-icon edit-icon" (click)="openEditModal(b)" title="Update"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Add/Edit Lounge Booking Modal -->
+      <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+        <div class="edit-container" (click)="$event.stopPropagation()">
+          <h2>{{ isEditMode ? 'Edit' : 'Add' }} Lounge Booking</h2>
+          <form (ngSubmit)="saveBooking()" class="lounge-form">
+            <div class="form-grid">
+              <!-- Booking ID (Read-only, Edit Mode Only) -->
+              <div class="form-row" *ngIf="isEditMode">
+                <label>Booking ID</label>
+                <input type="text" [ngModel]="formBooking.lounge_booking_id" name="lounge_booking_id" readonly />
+              </div>
+
+              <!-- Passenger Name -->
+              <div class="form-row">
+                <label>Passenger Name</label>
+                <input type="text" [(ngModel)]="formBooking.passenger_name" name="passenger_name" required />
+              </div>
+
+              <!-- Passenger Phone -->
+              <div class="form-row">
+                <label>Passenger Phone</label>
+                <input type="text" [(ngModel)]="formBooking.passenger_phone" name="passenger_phone" required />
+              </div>
+
+              <!-- Ref NUM -->
+              <div class="form-row">
+                <label>Ref NUM</label>
+                <input type="text" [(ngModel)]="formBooking.booking_reference" name="booking_reference" />
+              </div>
+
+              <!-- Lounge Name -->
+              <div class="form-row">
+                <label>Lounge Name</label>
+                <input type="text" [(ngModel)]="formBooking.lounge_name" name="lounge_name" required />
+              </div>
+
+              <!-- Market place -->
+              <div class="form-row">
+                <label>Market place</label>
+                <input type="text" [(ngModel)]="formBooking.product_name" name="product_name" />
+              </div>
+
+              <!-- Booking Type -->
+              <div class="form-row">
+                <label>Booking Type</label>
+                <select [(ngModel)]="formBooking.booking_type" name="booking_type">
+                  
+                  <option value="Pre trip">Pre trip</option>
+                  <option value="post trip">Post trip</option>
+                  <option value="Standalone">Standalone</option>
+                  
+                </select>
+              </div>
+
+              <!-- Date & Time -->
+              <div class="form-row">
+                <label>Date & Time</label>
+                <input type="datetime-local" [(ngModel)]="formBooking.scheduled_arrival" name="scheduled_arrival" required />
+              </div>
+
+              <!-- Pricing Type -->
+              <div class="form-row">
+                <label>Duration</label>
+                <input type="text" [(ngModel)]="formBooking.pricing_type" name="pricing_type" required />
+              </div>
+
+              <!-- Number of Guests -->
+              <div class="form-row">
+                <label>Number of Guests</label>
+                <input type="number" [(ngModel)]="formBooking.number_of_guests" name="number_of_guests" min="1" required />
+              </div>
+
+              <!-- Total Amount -->
+              <div class="form-row">
+                <label>Total Amount</label>
+                <input type="number" [(ngModel)]="formBooking.total_amount" name="total_amount" min="0" step="0.01" required />
+              </div>
+
+              <!-- Payment Status (Edit Mode Only) -->
+              <div class="form-row" *ngIf="isEditMode">
+                <label>Payment Status</label>
+                <select [(ngModel)]="formBooking.payment_status" name="payment_status">
+                  <option value="Paid">Paid</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Failed">Failed</option>
+                </select>
+              </div>
+
+              <!-- Booking Status (Edit Mode Only) -->
+              <div class="form-row" *ngIf="isEditMode">
+                <label>Booking Status</label>
+                <select [(ngModel)]="formBooking.status" name="status">
+                  <option value="Confirmed">Confirmed</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Cancelled">Cancelled</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+
+              <!-- Additional Features (Full Width) -->
+              <div class="form-row full-width">
+                <label>Additional Features</label>
+                <div class="checkbox-group">
+                  <label class="checkbox-item" *ngFor="let feature of availableFeatures">
+                    <input type="checkbox" 
+                           [checked]="isFeatureSelected(feature)" 
+                           (change)="toggleFeature(feature)">
+                    <span>{{ feature }}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions full-width">
+              <button type="button" (click)="closeModal()">Cancel</button>
+              <button type="submit" [disabled]="!isLoungeBookingFormValid()">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+  </div> <!-- End of content -->
+</div> <!-- End of lounge-booking-container -->
+
+<!-- Notification Panel -->
+<app-notification-panel *ngIf="showNotificationPanel" (close)="closeNotificationPanel()"></app-notification-panel>

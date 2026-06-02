@@ -1,0 +1,122 @@
+<div class="passenger-container">
+  <div class="top-navigation-row">
+    <div class="app-branding">
+      <div class="logo-circle">
+        <i class="fas fa-bus"></i>
+      </div>
+      <span class="app-name">BusLounge</span>
+    </div>
+    <app-navbar></app-navbar>
+    <div class="header-actions">
+      <button class="icon-btn notification-btn" (click)="toggleNotificationPanel()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+        </svg>
+        <span *ngIf="notificationService.totalPendingCount > 0" class="notification-badge">{{ notificationService.totalPendingCount }}</span>
+      </button>
+      <div class="profile-dropdown-container">
+        <button class="icon-btn profile-btn" (click)="toggleProfileMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </button>
+        <div class="dropdown-menu" *ngIf="showProfileMenu">
+          <a routerLink="/settings" class="dropdown-item">
+            <i class="fas fa-cog"></i> Profile setting
+          </a>
+          <a (click)="logout()" class="dropdown-item">
+            <i class="fas fa-sign-out-alt"></i> Log out
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-header">
+    <div class="header-content">
+      <h2>Passenger Management</h2>
+    </div>
+    <!-- Add Passenger button removed as per design -->
+  </div>
+
+  <div class="charts-section">
+    <!-- Top: Passenger growth line chart -->
+    <div class="chart top-chart">
+      <div class="chart-header">
+        <h3>Passenger growth</h3>
+      </div>
+      <svg [attr.viewBox]="'0 0 600 220'" class="line-chart" preserveAspectRatio="none">
+        <polyline
+          [attr.points]="getPoints()"
+          fill="none"
+          stroke="var(--active)"
+          stroke-width="3"
+        />
+        <g *ngFor="let c of monthlyCounts; index as i">
+          <circle
+            [attr.cx]="(30 + i*((600-60)/(months.length-1)))"
+            [attr.cy]="(220-30 - (c/getMaxCount())*(220-60))"
+            r="3"
+            fill="#1d4ed8"
+          />
+        </g>
+      </svg>
+      <div class="months">
+        <span *ngFor="let m of months">{{ m }}</span>
+      </div>
+    </div>
+
+    <!-- Bottom: two summary charts row -->
+    <div class="bottom-charts">
+      <!-- Passenger category distribution (pie) -->
+      <div class="chart">
+        <div class="chart-header">
+          <h3>Passenger Category Distribution Chart</h3>
+        </div>
+        <div class="category-chart">
+          <div class="category-pie"></div>
+          <div class="category-legend">
+            <div class="legend-item">
+              <span class="legend-color lounge"></span>
+              <span class="legend-label">L-Lounge Users</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color first-time"></span>
+              <span class="legend-label">First-Time Passengers</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color regular"></span>
+              <span class="legend-label">Regular Passengers</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color vip"></span>
+              <span class="legend-label">VIP Passengers</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color non-lounge"></span>
+              <span class="legend-label">Non-Lounge Users</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passenger booking by route (bar) -->
+      <div class="chart">
+        <div class="chart-header">
+          <h3>Passenger Booking by Route Chart</h3>
+        </div>
+        <div class="route-chart">
+          <canvas *ngIf="isBrowser" baseChart [data]="routeChartData" [options]="routeChartOptions" type="bar"></canvas>
+          <div *ngIf="!isBrowser || routeBookingCounts.length === 0" style="padding: 20px; text-align: center; color: #666;">
+            No route data available
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+      <!-- Modal dialogs, search toolbar and table intentionally removed for cleaner dashboard view -->
+</div>
+
+<!-- Notification Panel -->
+<app-notification-panel *ngIf="showNotificationPanel" (close)="closeNotificationPanel()"></app-notification-panel>

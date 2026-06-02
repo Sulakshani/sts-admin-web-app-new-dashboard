@@ -1,0 +1,213 @@
+.bus-preview-container {
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .bus-header, .bus-footer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+
+    .bus-front, .bus-back {
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+  .bus-layout {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    box-shadow: none;
+    max-width: fit-content;
+
+    .row-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      .row-label {
+        width: 50px;
+        text-align: center;
+        font-weight: 500;
+        font-size: 1.125rem;
+        color: #2563eb;
+        background-color: #eff6ff;
+        padding: 0.5rem;
+        border-radius: 6px;
+        margin-right: 1rem;
+      }
+
+      .seats-row {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+
+        .seat-group {
+          display: flex;
+          gap: 0.5rem;
+
+          .seat {
+            width: 60px;
+            height: 60px;
+            background-color: #3b82f6;
+            border: 3px solid #2563eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: transform 180ms ease;
+
+            &:hover {
+              transform: scale(1.05);
+            }
+
+            .seat-number {
+              color: #ffffff;
+              font-weight: 500;
+              font-size: 0.875rem;
+              text-align: center;
+            }
+
+            &.window-seat {
+              background-color: #fbbf24;
+              border-color: #f59e0b;
+              box-shadow: none;
+
+              .seat-number {
+                color: #78350f;
+              }
+            }
+
+            &.aisle-seat {
+              background-color: #60a5fa;
+              border-color: #3b82f6;
+            }
+          }
+        }
+
+        .aisle-space {
+          width: 80px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+
+          .aisle-line {
+            width: 2px;
+            height: 100%;
+            background: #cbd5e1;
+          }
+        }
+      }
+    }
+  }
+
+  .bus-footer {
+    margin-top: 1rem;
+  }
+
+  .seat-legend {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--text-secondary, #64748b);
+
+      .seat-sample {
+        width: 50px;
+        height: 50px;
+        background-color: #3b82f6;
+        border: 2px solid #2563eb;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        span {
+          color: #ffffff;
+          font-weight: 500;
+          font-size: 0.75rem;
+        }
+
+        &.window-seat {
+          background-color: #fbbf24;
+          border-color: #f59e0b;
+
+          span {
+            color: #78350f;
+          }
+        }
+
+        &.aisle-seat {
+          background-color: #60a5fa;
+          border-color: #3b82f6;
+        }
+      }
+    }
+  }
+}
+
+// Responsive styles
+@media (max-width: 768px) {
+  .bus-preview-container {
+    padding: 1rem;
+
+    .bus-layout {
+      padding: 1rem;
+      overflow-x: auto;
+
+      .row-container {
+        .row-label {
+          width: 40px;
+          font-size: 1rem;
+        }
+
+        .seats-row {
+          .seat-group {
+            .seat {
+              width: 48px;
+              height: 48px;
+
+              .seat-number {
+                font-size: 0.75rem;
+              }
+            }
+          }
+
+          .aisle-space {
+            width: 40px;
+          }
+        }
+      }
+    }
+
+    .seat-legend {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+
+      .legend-item {
+        .seat-sample {
+          width: 40px;
+          height: 40px;
+        }
+      }
+    }
+  }
+}

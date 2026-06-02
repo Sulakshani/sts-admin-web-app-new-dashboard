@@ -1,0 +1,516 @@
+<div class="complaint-container">
+  <div class="top-navigation-row">
+    <div class="app-branding">
+      <div class="logo-circle">
+        <i class="fas fa-bus"></i>
+      </div>
+      <span class="app-name">BusLounge</span>
+    </div>
+    <app-navbar></app-navbar>
+    <div class="header-actions">
+      <button class="icon-btn notification-btn" (click)="toggleNotificationPanel()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+        </svg>
+        <span *ngIf="notificationService.totalPendingCount > 0" class="notification-badge">{{ notificationService.totalPendingCount }}</span>
+      </button>
+      <div class="profile-dropdown-container">
+        <button class="icon-btn profile-btn" (click)="toggleProfileMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </button>
+        <div class="dropdown-menu" *ngIf="showProfileMenu">
+          <a routerLink="/settings" class="dropdown-item">
+            <i class="fas fa-cog"></i> Profile setting
+          </a>
+          <a (click)="logout()" class="dropdown-item">
+            <i class="fas fa-sign-out-alt"></i> Log out
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-header">
+    <h1>Complaint Management</h1>
+  </div>
+
+  <div class="tabs-container">
+    <div class="tabs">
+      <button [class.active]="activeTab === 'All'" (click)="setActiveTab('All')">All</button>
+      <button [class.active]="activeTab === 'Passengers'" (click)="setActiveTab('Passengers')">Passengers</button>
+      <button [class.active]="activeTab === 'Bus Owners'" (click)="setActiveTab('Bus Owners')">Bus Owners</button>
+      <button [class.active]="activeTab === 'Lounge owners'" (click)="setActiveTab('Lounge owners')">Lounge owners</button>
+      <button [class.active]="activeTab === 'Drivers'" (click)="setActiveTab('Drivers')">Drivers</button>
+      <button [class.active]="activeTab === 'Conductors'" (click)="setActiveTab('Conductors')">Conductors</button>
+    </div>
+  </div>
+
+  <div class="stats-cards">
+    <div class="card" *ngFor="let stat of stats">
+      <div class="card-icon" [ngClass]="stat.color">
+        <i [class]="stat.icon"></i>
+      </div>
+      <div class="card-info">
+        <span class="count">{{stat.count}}</span>
+        <span class="title">{{stat.title}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="pagination-controls">
+    <div class="page-meta">
+      <span>Page {{ page }} of {{ totalPages || 1 }}</span>
+      <span>Total records: {{ totalRecords }}</span>
+    </div>
+    <div class="page-actions">
+      <label for="pageSize">Rows per page</label>
+      <select id="pageSize" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+        <option *ngFor="let size of pageSizeOptions" [ngValue]="size">{{ size }}</option>
+      </select>
+      <button class="icon-btn" (click)="previousPage()" [disabled]="page <= 1 || isLoading">Previous</button>
+      <button class="icon-btn" (click)="nextPage()" [disabled]="page >= totalPages || isLoading">Next</button>
+    </div>
+  </div>
+
+  <!-- Passenger Complaints -->
+  <div class="complaint-section" *ngIf="activeTab === 'All' || activeTab === 'Passengers'">
+    <h2>Passenger complaints</h2>
+    <p-table [value]="passengerComplaints" [tableStyle]="{'min-width': '60rem'}" styleClass="p-datatable-sm">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Complain ID</th>
+          <th>User Role</th>
+          <th>Name</th>
+          <th>Contact</th>
+          <th>Category</th>
+          <th>Complaint message</th>
+          <th>Photo/Video</th>
+          <th>Date&Time</th>
+          <th>Assigned Team</th>
+        
+          <th>Activity</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-complaint>
+        <tr>
+          <td>{{complaint.id}}</td>
+          <td>{{complaint.role}}</td>
+          <td>{{complaint.name}}</td>
+          <td>{{complaint.contact}}</td>
+          <td>{{complaint.category}}</td>
+          <td>{{complaint.message}}</td>
+          <td>{{complaint.media}}</td>
+          <td>{{complaint.dateTime}}</td>
+          <td>{{complaint.assignedTeam}}</td>
+          
+          <td class="activity-cell">{{complaint.activity}}</td>
+          <td>
+            <p-tag [value]="complaint.status" [severity]="getStatusSeverity(complaint.status)"></p-tag>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="icon-btn" (click)="viewComplaint(complaint)"><i class="pi pi-eye"></i></button>
+              <button *ngIf="isSuperAdmin()" class="icon-btn" (click)="editComplaint(complaint)"><i class="pi pi-pencil"></i></button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Bus Owner Complaints -->
+  <div class="complaint-section" *ngIf="activeTab === 'All' || activeTab === 'Bus Owners'">
+    <h2>Bus owner complaints</h2>
+    <p-table [value]="busOwnerComplaints" [tableStyle]="{'min-width': '60rem'}" styleClass="p-datatable-sm">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Complain ID</th>
+          <th>User Role</th>
+          <th>Name</th>
+          <th>Contact</th>
+          <th>Category</th>
+          <th>Complaint message</th>
+          <th>Photo/Video</th>
+          <th>Date&Time</th>
+          <th>Assigned Team</th>
+          
+          <th>Activity</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-complaint>
+        <tr>
+          <td>{{complaint.id}}</td>
+          <td>{{complaint.role}}</td>
+          <td>{{complaint.name}}</td>
+          <td>{{complaint.contact}}</td>
+          <td>{{complaint.category}}</td>
+          <td>{{complaint.message}}</td>
+          <td>{{complaint.media}}</td>
+          <td>{{complaint.dateTime}}</td>
+          <td>{{complaint.assignedTeam}}</td>
+          
+          <td class="activity-cell">{{complaint.activity}}</td>
+          <td>
+            <p-tag [value]="complaint.status" [severity]="getStatusSeverity(complaint.status)"></p-tag>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="icon-btn" (click)="viewComplaint(complaint)"><i class="pi pi-eye"></i></button>
+              <button *ngIf="isSuperAdmin()" class="icon-btn" (click)="editComplaint(complaint)"><i class="pi pi-pencil"></i></button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Lounge Owner Complaints -->
+  <div class="complaint-section" *ngIf="activeTab === 'All' || activeTab === 'Lounge owners'">
+    <h2>Lounge owner complaints</h2>
+    <p-table [value]="loungeOwnerComplaints" [tableStyle]="{'min-width': '60rem'}" styleClass="p-datatable-sm">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Complain ID</th>
+          <th>User Role</th>
+          <th>Name</th>
+          <th>Contact</th>
+          <th>Category</th>
+          <th>Complaint message</th>
+          <th>Photo/Video</th>
+          <th>Date&Time</th>
+          <th>Assigned Team</th>
+         
+          <th>Activity</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-complaint>
+        <tr>
+          <td>{{complaint.id}}</td>
+          <td>{{complaint.role}}</td>
+          <td>{{complaint.name}}</td>
+          <td>{{complaint.contact}}</td>
+          <td>{{complaint.category}}</td>
+          <td>{{complaint.message}}</td>
+          <td>{{complaint.media}}</td>
+          <td>{{complaint.dateTime}}</td>
+          <td>{{complaint.assignedTeam}}</td>
+          
+          <td class="activity-cell">{{complaint.activity}}</td>
+          <td>
+            <p-tag [value]="complaint.status" [severity]="getStatusSeverity(complaint.status)"></p-tag>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="icon-btn" (click)="viewComplaint(complaint)"><i class="pi pi-eye"></i></button>
+              <button *ngIf="isSuperAdmin()" class="icon-btn" (click)="editComplaint(complaint)"><i class="pi pi-pencil"></i></button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Driver Complaints -->
+  <div class="complaint-section" *ngIf="activeTab === 'All' || activeTab === 'Drivers'">
+    <h2>Driver complaints</h2>
+    <p-table [value]="driverComplaints" [tableStyle]="{'min-width': '60rem'}" styleClass="p-datatable-sm">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Complain ID</th>
+          <th>User Role</th>
+          <th>Name</th>
+          <th>Contact</th>
+          <th>Category</th>
+          <th>Complaint message</th>
+          <th>Photo/Video</th>
+          <th>Date&Time</th>
+          <th>Assigned Team</th>
+         
+          <th>Activity</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-complaint>
+        <tr>
+          <td>{{complaint.id}}</td>
+          <td>{{complaint.role}}</td>
+          <td>{{complaint.name}}</td>
+          <td>{{complaint.contact}}</td>
+          <td>{{complaint.category}}</td>
+          <td>{{complaint.message}}</td>
+          <td>{{complaint.media}}</td>
+          <td>{{complaint.dateTime}}</td>
+          <td>{{complaint.assignedTeam}}</td>
+         
+          <td class="activity-cell">{{complaint.activity}}</td>
+          <td>
+            <p-tag [value]="complaint.status" [severity]="getStatusSeverity(complaint.status)"></p-tag>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="icon-btn" (click)="viewComplaint(complaint)"><i class="pi pi-eye"></i></button>
+              <button *ngIf="isSuperAdmin()" class="icon-btn" (click)="editComplaint(complaint)"><i class="pi pi-pencil"></i></button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Conductor Complaints -->
+  <div class="complaint-section" *ngIf="activeTab === 'All' || activeTab === 'Conductors'">
+    <h2>Conductor complaints</h2>
+    <p-table [value]="conductorComplaints" [tableStyle]="{'min-width': '60rem'}" styleClass="p-datatable-sm">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Complain ID</th>
+          <th>User Role</th>
+          <th>Name</th>
+          <th>Contact</th>
+          <th>Category</th>
+          <th>Complaint message</th>
+          <th>Photo/Video</th>
+          <th>Date&Time</th>
+          <th>Assigned Team</th>
+        
+          <th>Activity</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-complaint>
+        <tr>
+          <td>{{complaint.id}}</td>
+          <td>{{complaint.role}}</td>
+          <td>{{complaint.name}}</td>
+          <td>{{complaint.contact}}</td>
+          <td>{{complaint.category}}</td>
+          <td>{{complaint.message}}</td>
+          <td>{{complaint.media}}</td>
+          <td>{{complaint.dateTime}}</td>
+          <td>{{complaint.assignedTeam}}</td>
+         
+          <td class="activity-cell">{{complaint.activity}}</td>
+          <td>
+            <p-tag [value]="complaint.status" [severity]="getStatusSeverity(complaint.status)"></p-tag>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="icon-btn" (click)="viewComplaint(complaint)"><i class="pi pi-eye"></i></button>
+              <button *ngIf="isSuperAdmin()" class="icon-btn" (click)="editComplaint(complaint)"><i class="pi pi-pencil"></i></button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <p-dialog 
+    [(visible)]="displayViewModal" 
+    [modal]="true" 
+    [style]="{width: '800px'}" 
+    [draggable]="false" 
+    [resizable]="false"
+    header="View Complaint"
+    styleClass="complaint-view-dialog"
+    maskStyleClass="blur-mask">
+    
+    <div class="complaint-details-grid">
+      <div class="form-group">
+        <label>Complaint ID</label>
+        <input type="text" pInputText [value]="selectedComplaint.id" readonly class="readonly-input">
+      </div>
+      <div class="form-group">
+        <label>User Role</label>
+        <input type="text" pInputText [value]="selectedComplaint.role" readonly class="readonly-input">
+      </div>
+      
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" pInputText [value]="selectedComplaint.name" readonly class="readonly-input">
+      </div>
+      <div class="form-group">
+        <label>Contact</label>
+        <input type="text" pInputText [value]="selectedComplaint.contact" readonly class="readonly-input">
+      </div>
+      
+      <div class="form-group">
+        <label>Category</label>
+        <input type="text" pInputText [value]="selectedComplaint.category" readonly class="readonly-input">
+      </div>
+      <div class="form-group">
+        <label>Date & Time</label>
+        <input type="text" pInputText [value]="selectedComplaint.dateTime" readonly class="readonly-input">
+      </div>
+      
+      <div class="form-group full-width">
+        <label>Photos/Videos</label>
+        <div class="media-placeholder">Empty</div>
+      </div>
+      
+      <div class="form-group full-width">
+        <label>Complaint Message</label>
+        <textarea pInputTextarea [value]="selectedComplaint.message" readonly rows="2" class="readonly-input"></textarea>
+      </div>
+      
+      <!-- Escalation Information -->
+      <div class="form-group full-width" *ngIf="escalationInfo">
+        <label>Escalation Status</label>
+        <div class="escalation-info-box">
+          <div class="escalation-header">
+            <span class="escalation-badge" [ngClass]="getEscalationBadgeClass(escalationInfo.current_level)">
+              Level {{escalationInfo.current_level}}
+            </span>
+            <span class="escalation-team">{{escalationInfo.current_team}}</span>
+          </div>
+          <div class="escalation-details" *ngIf="escalationInfo.next_escalation_due">
+            <small><strong>Next escalation:</strong> {{formatDate(escalationInfo.next_escalation_due)}}</small>
+          </div>
+          <div class="escalation-details" *ngIf="escalationInfo.next_escalation_due">
+            <small><strong>Resolution period:</strong> {{getResolutionWindowText()}}</small>
+          </div>
+          <div class="escalation-details" *ngIf="escalationInfo.next_escalation_due">
+            <small><strong>Time remaining:</strong> {{getTimeRemaining(escalationInfo.next_escalation_due)}}</small>
+          </div>
+          <div class="escalation-details" *ngIf="escalationInfo.last_escalated_at">
+            <small><strong>Last escalated:</strong> {{formatDate(escalationInfo.last_escalated_at)}}</small>
+          </div>
+          <div class="escalation-details" *ngIf="selectedComplaint.resolvedBy">
+            <small><strong>Resolved by:</strong> {{selectedComplaint.resolvedBy}}</small>
+          </div>
+          <div class="escalation-details" *ngIf="isSuperAdmin()">
+            <label>Assign To App Role</label>
+            <p-select
+              [(ngModel)]="selectedAssigneeRole"
+              [options]="assignableRoles"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select role"
+              [style]="{'width': '100%'}">
+            </p-select>
+            <div style="margin-top: 8px;">
+              <button pButton label="Assign Complaint" class="p-button-help" (click)="assignComplaintToSelectedRole()" [disabled]="isAssigningComplaint || !selectedAssigneeRole"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group full-width">
+        <label>Solution</label>
+        <textarea pInputTextarea [(ngModel)]="solutionText" rows="3" placeholder="Type solution here..."></textarea>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="dialog-footer">
+        <button pButton label="Escalate to Next Level" 
+                class="p-button-warning" 
+                (click)="escalateComplaint(selectedComplaint.id)"
+          [disabled]="isEscalating || !canEscalateComplaint || selectedComplaint.status === 'Resolved'">
+          <i class="pi pi-arrow-up"></i>
+        </button>
+        <button pButton label="Send Solution" class="p-button-primary" (click)="sendSolution()" [disabled]="!canUpdateComplaint(selectedComplaint)"></button>
+        <button pButton label="Cancel" class="p-button-secondary" (click)="closeViewModal()"></button>
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <p-dialog 
+    [(visible)]="displayEditModal" 
+    [modal]="true" 
+    [style]="{width: '800px'}" 
+    [draggable]="false" 
+    [resizable]="false"
+    header="Edit Complaint"
+    styleClass="complaint-view-dialog"
+    maskStyleClass="blur-mask">
+    
+    <div class="complaint-details-grid">
+      <div class="form-group">
+        <label>Complaint ID</label>
+        <input type="text" pInputText [value]="selectedComplaint.id" readonly class="readonly-input">
+      </div>
+      <div class="form-group">
+        <label>User Role</label>
+        <input type="text" pInputText [value]="selectedComplaint.role" readonly class="readonly-input">
+      </div>
+      
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" pInputText [value]="selectedComplaint.name" readonly class="readonly-input">
+      </div>
+      <div class="form-group">
+        <label>Contact</label>
+        <input type="text" pInputText [value]="selectedComplaint.contact" readonly class="readonly-input">
+      </div>
+      
+      <div class="form-group">
+        <label>Category</label>
+        <input type="text" pInputText [value]="selectedComplaint.category" readonly class="readonly-input">
+      </div>
+      <div class="form-group">
+        <label>Date & Time</label>
+        <input type="text" pInputText [value]="selectedComplaint.dateTime" readonly class="readonly-input">
+      </div>
+      
+      <div class="form-group full-width">
+        <label>Photos/Videos</label>
+        <div class="media-placeholder">Empty</div>
+      </div>
+      
+      <div class="form-group full-width">
+        <label>Complaint Message</label>
+        <textarea pInputTextarea [value]="selectedComplaint.message" readonly rows="2" class="readonly-input"></textarea>
+      </div>
+
+      <div class="form-group" *ngIf="isSuperAdmin(); else readonlyAssignedTeamTpl">
+        <label>Assigned Team</label>
+        <p-select
+          [(ngModel)]="selectedComplaint.assignedTeam"
+          [options]="assignableRoles"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Select assigned team"
+          styleClass="assigned-team-select"
+          [style]="{'width': '100%'}">
+        </p-select>
+      </div>
+      <ng-template #readonlyAssignedTeamTpl>
+        <div class="form-group">
+          <label>Assigned Team</label>
+          <input type="text" pInputText [value]="selectedComplaint.assignedTeam" readonly class="readonly-input">
+        </div>
+      </ng-template>
+      <div class="form-group">
+        <label>Resolved by*</label>
+        <input type="text" pInputText [(ngModel)]="selectedComplaint.resolvedBy">
+      </div>
+      
+      <div class="form-group full-width">
+        <label>Remark*</label>
+        <textarea pInputTextarea [(ngModel)]="selectedComplaint.activity" rows="2" placeholder="Enter remark..."></textarea>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="dialog-footer">
+        <button pButton label="Save" class="p-button-primary" (click)="saveComplaint()"></button>
+        <button pButton label="Cancel" class="p-button-secondary" (click)="closeEditModal()"></button>
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <app-notification-panel 
+    *ngIf="showNotificationPanel" 
+    (close)="closeNotificationPanel()">
+  </app-notification-panel>
+</div>

@@ -1,0 +1,166 @@
+<div class="seat-layouts-container">
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+
+  <div class="page-header">
+    <h2>Bus Seat Layout Templates</h2>
+    <p-button
+      label="Create New Template"
+      icon="pi pi-plus"
+      (onClick)="openCreateDialog()"
+      severity="success">
+    </p-button>
+  </div>
+
+  <p-table
+    [value]="templates()"
+    [loading]="loading()"
+    [paginator]="true"
+    [rows]="10"
+    styleClass="p-datatable-gridlines">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Template Name</th>
+        <th>Total Rows</th>
+        <th>Total Seats</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Created At</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-template>
+      <tr>
+        <td>{{ template.template_name }}</td>
+        <td>{{ template.total_rows }}</td>
+        <td>{{ template.total_seats }}</td>
+        <td>{{ template.description || 'N/A' }}</td>
+        <td>
+          <span [class]="template.is_active ? 'status-active' : 'status-inactive'">
+            {{ template.is_active ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+        <td>{{ template.created_at | date: 'short' }}</td>
+        <td>
+          <p-button
+            icon="pi pi-eye"
+            [rounded]="true"
+            [text]="true"
+            severity="info"
+            (onClick)="viewTemplate(template)"
+            pTooltip="View Layout">
+          </p-button>
+          <p-button
+            icon="pi pi-trash"
+            [rounded]="true"
+            [text]="true"
+            severity="danger"
+            (onClick)="deleteTemplate(template)"
+            pTooltip="Delete">
+          </p-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="7" class="text-center">No seat layout templates found</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <!-- Create Template Dialog -->
+  <p-dialog
+    header="Create Seat Layout Template"
+    [(visible)]="displayDialog"
+    [modal]="true"
+    [style]="{width: '60vw'}"
+    [draggable]="false"
+    [resizable]="false">
+    <div class="form-container">
+      <div class="form-field">
+        <label for="templateName">Template Name *</label>
+        <input
+          pInputText
+          id="templateName"
+          [(ngModel)]="templateName"
+          placeholder="e.g., Standard 40-seater Bus"
+          class="w-full" />
+      </div>
+
+      <div class="form-field">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          [(ngModel)]="description"
+          rows="3"
+          placeholder="Optional description"
+          class="w-full"></textarea>
+      </div>
+
+      <div class="form-field">
+        <label for="totalRows">Number of Rows *</label>
+        <p-inputNumber
+          [(ngModel)]="totalRows"
+          [min]="1"
+          [max]="20"
+          [showButtons]="true"
+          inputId="totalRows">
+        </p-inputNumber>
+      </div>
+
+      <div class="form-field">
+        <label>Seat Configuration *</label>
+        <p class="help-text">Click on boxes to select seats. Use +/- buttons to add/remove rows.</p>
+        <app-seat-selector
+          [(totalRows)]="totalRows"
+          (seatMapChange)="onSeatMapChange($event)">
+        </app-seat-selector>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <p-button
+        label="Cancel"
+        severity="secondary"
+        (onClick)="displayDialog.set(false)">
+      </p-button>
+      <p-button
+        label="Create Template"
+        severity="success"
+        (onClick)="saveTemplate()">
+      </p-button>
+    </ng-template>
+  </p-dialog>
+
+  <!-- Preview Dialog -->
+  <p-dialog
+    header="Seat Layout Preview"
+    [(visible)]="displayPreviewDialog"
+    [modal]="true"
+    [style]="{width: '70vw'}"
+    [draggable]="false"
+    [resizable]="false">
+    <div *ngIf="previewTemplate">
+      <div class="preview-header">
+        <h3>{{ previewTemplate.template_name }}</h3>
+        <p class="preview-description">{{ previewTemplate.description }}</p>
+        <div class="preview-stats">
+          <span><strong>Total Rows:</strong> {{ previewTemplate.total_rows }}</span>
+          <span><strong>Total Seats:</strong> {{ previewTemplate.total_seats }}</span>
+        </div>
+      </div>
+
+      <app-bus-layout-preview
+        [layoutPreview]="previewTemplate.layout_preview">
+      </app-bus-layout-preview>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <p-button
+        label="Close"
+        severity="secondary"
+        (onClick)="displayPreviewDialog.set(false)">
+      </p-button>
+    </ng-template>
+  </p-dialog>
+</div>

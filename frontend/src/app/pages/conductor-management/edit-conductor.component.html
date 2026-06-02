@@ -1,0 +1,71 @@
+<div class="edit-conductor-page" *ngIf="conductor as c">
+  <nav class="back-nav" (click)="goBack()" aria-label="Back">
+    <span class="arrow">‹</span>
+    <span class="label">Back</span>
+  </nav>
+  <div class="page-header">
+    <h2>Edit Conductor Details</h2>
+  </div>
+
+  <form class="conductor-form" (ngSubmit)="save()">
+    <div class="form-row">
+      <label>Name<span class="req">*</span></label>
+      <input type="text" [(ngModel)]="c.name" name="name" required minlength="2"
+        #nameModel="ngModel" (input)="onNameChange()"
+        [class.error-input]="validationErrors.name && (nameModel.dirty || nameModel.touched || isFormSubmitted)" />
+      <small class="error" *ngIf="validationErrors.name && (nameModel.dirty || nameModel.touched || isFormSubmitted)">{{ validationErrors.name }}</small>
+    </div>
+
+    <div class="form-row">
+      <label>Contact Number<span class="req">*</span></label>
+      <input type="tel" [(ngModel)]="c.contact_number" name="contact_number" required
+        #contactModel="ngModel" (input)="onContactNumberChange()"
+        [class.error-input]="validationErrors.contact_number && (contactModel.dirty || contactModel.touched || isFormSubmitted)" />
+      <small class="error" *ngIf="validationErrors.contact_number && (contactModel.dirty || contactModel.touched || isFormSubmitted)">{{ validationErrors.contact_number }}</small>
+    </div>
+
+    <div class="form-row">
+      <label>License Number<span class="req">*</span></label>
+      <input type="text" [(ngModel)]="c.license_number" name="license_number" required
+        #licenseModel="ngModel" (input)="onLicenseNumberChange()"
+        [class.error-input]="validationErrors.license_number && (licenseModel.dirty || licenseModel.touched || isFormSubmitted)" />
+      <small class="error" *ngIf="validationErrors.license_number && (licenseModel.dirty || licenseModel.touched || isFormSubmitted)">{{ validationErrors.license_number }}</small>
+    </div>
+
+    <div class="form-row">
+      <label>License Expiry<span class="req">*</span></label>
+      <input type="date" [(ngModel)]="c.license_expiry_date" name="license_expiry_date" required
+        #licenseExpiryModel="ngModel" (input)="onLicenseExpiryChange()"
+        [class.error-input]="validationErrors.license_expiry_date && (licenseExpiryModel.dirty || licenseExpiryModel.touched || isFormSubmitted)" />
+      <small class="error" *ngIf="validationErrors.license_expiry_date && (licenseExpiryModel.dirty || licenseExpiryModel.touched || isFormSubmitted)">{{ validationErrors.license_expiry_date }}</small>
+    </div>
+
+    <div class="form-row">
+      <label>Experience (Years)<span class="req">*</span></label>
+      <input type="number" [(ngModel)]="c.experience_years" name="experience_years" min="0" max="50" required
+        #experienceModel="ngModel" (input)="onExperienceChange()"
+        [class.error-input]="validationErrors.experience_years && (experienceModel.dirty || experienceModel.touched || isFormSubmitted)" />
+      <small class="error" *ngIf="validationErrors.experience_years && (experienceModel.dirty || experienceModel.touched || isFormSubmitted)">{{ validationErrors.experience_years }}</small>
+    </div>
+
+    <div class="form-row">
+      <label>Hire Date<span class="req">*</span></label>
+      <input type="date" [(ngModel)]="c.hire_date" name="hire_date" required
+        #hireDateModel="ngModel" (input)="onHireDateChange()"
+        [class.error-input]="validationErrors.hire_date && (hireDateModel.dirty || hireDateModel.touched || isFormSubmitted)" />
+      <small class="error" *ngIf="validationErrors.hire_date && (hireDateModel.dirty || hireDateModel.touched || isFormSubmitted)">{{ validationErrors.hire_date }}</small>
+    </div>
+
+    <div class="form-row inline">
+      <label class="checkbox">
+        <input type="checkbox" [ngModel]="c.status.toLowerCase() === 'active'" (ngModelChange)="c.status = $event ? 'Active' : 'Inactive'" name="status" />
+        <span>Active</span>
+      </label>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn secondary" (click)="cancel()">Cancel</button>
+      <button type="submit" class="btn primary" [disabled]="isSubmitting || !isFormValid()">{{ isSubmitting ? 'Saving...' : 'Save' }}</button>
+    </div>
+  </form>
+</div>

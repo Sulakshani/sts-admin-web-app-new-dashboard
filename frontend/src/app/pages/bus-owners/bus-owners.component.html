@@ -1,0 +1,230 @@
+<div class="bus-owners-container">
+  <div class="top-navigation-row">
+    <div class="app-branding">
+      <div class="logo-circle">
+        <i class="fas fa-bus"></i>
+      </div>
+      <span class="app-name">BusLounge</span>
+    </div>
+    <app-navbar></app-navbar>
+    <div class="header-actions">
+      <button class="icon-btn notification-btn" (click)="toggleNotificationPanel()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+        </svg>
+        <span *ngIf="notificationService.totalPendingCount > 0" class="notification-badge">{{ notificationService.totalPendingCount }}</span>
+      </button>
+      <div class="profile-dropdown-container">
+        <button class="icon-btn profile-btn" (click)="toggleProfileMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </button>
+        <div class="dropdown-menu" *ngIf="showProfileMenu">
+          <a routerLink="/settings" class="dropdown-item">
+            <i class="fas fa-cog"></i> Profile setting
+          </a>
+          <a (click)="logout()" class="dropdown-item">
+            <i class="fas fa-sign-out-alt"></i> Log out
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-header">
+    <div class="header-content">
+      <h2>Bus Owners Management</h2>
+    </div>
+    
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card total-owners">
+      <div class="stat-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ getTotalBusOwners() }}</div>
+        <div class="stat-title">Total Bus Owners</div>
+      </div>
+    </div>
+
+    <div class="stat-card pending-verifications">
+      <div class="stat-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ getPendingVerifications() }}</div>
+        <div class="stat-title">Pending Verifications</div>
+      </div>
+    </div>
+
+    <div class="stat-card verified-owners">
+      <div class="stat-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">{{ getVerifiedCount() }}</div>
+        <div class="stat-title">Verified</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-container">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search by ID, company, email, contact, NIC..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearchChange()"
+      />
+      <button class="clear-search-btn" (click)="clearSearch()" *ngIf="searchTerm">×</button>
+    </div>
+  </div>
+
+  <table class="owners-table">
+    <thead>
+      <tr>
+        <th (click)="onSort('id')" style="cursor: pointer;" title="Click to sort">
+          Bus Owner ID {{ getSortIcon('id') }}
+        </th>
+        <th (click)="onSort('company_name')" style="cursor: pointer;" title="Click to sort">
+          Company {{ getSortIcon('company_name') }}
+        </th>
+        <th (click)="onSort('business_email')" style="cursor: pointer;" title="Click to sort">
+          Email {{ getSortIcon('business_email') }}
+        </th>
+        <th (click)="onSort('business_phone')" style="cursor: pointer;" title="Click to sort">
+          Contact {{ getSortIcon('business_phone') }}
+        </th>
+        <th (click)="onSort('identity_or_incorporation_no')" style="cursor: pointer;" title="Click to sort">
+          NIC Number {{ getSortIcon('identity_or_incorporation_no') }}
+        </th>
+        <th (click)="onSort('verification_status')" style="cursor: pointer;" title="Click to sort">
+          Verification {{ getSortIcon('verification_status') }}
+        </th>
+        <th>Documents</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let owner of filteredBusOwners">
+        <td>{{ owner.id }}</td>
+        <td class="company-name">{{ owner.company_name }}</td>
+        <td>{{ owner.business_email }}</td>
+        <td>{{ owner.business_phone }}</td>
+        <td>{{ owner.identity_or_incorporation_no }}</td>
+        <td>{{ owner.verification_status }}</td>
+        <td>
+          <div *ngIf="owner.verification_status?.toLowerCase() === 'verified'">
+            <div *ngIf="owner.verification_documents && owner.verification_documents.length > 0; else noDocuments">
+              <div *ngFor="let doc of owner.verification_documents; let i = index">
+                <a [href]="doc" target="_blank" class="document-link" title="Open document">
+                  <i class="fas fa-external-link-alt"></i> Document {{ i + 1 }}
+                </a>
+              </div>
+            </div>
+            <ng-template #noDocuments>
+              <span class="no-documents">No documents</span>
+            </ng-template>
+          </div>
+          <span *ngIf="owner.verification_status?.toLowerCase() === 'rejected'" class="no-documents">-</span>
+          <span *ngIf="owner.verification_status?.toLowerCase() === 'pending'" class="no-documents">Pending approval</span>
+        </td>
+        <td>
+          <div class="action-buttons">
+            <button class="action-btn edit-btn" (click)="editOwner(owner)" title="Edit">
+              <i class="fas fa-edit"></i>
+            </button>
+            
+          </div>
+        </td>
+      </tr>
+      <tr *ngIf="filteredBusOwners.length === 0">
+        <td colspan="8" class="no-data">No bus owners found</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <app-notification-panel
+    *ngIf="showNotificationPanel"
+    (close)="closeNotificationPanel()">
+  </app-notification-panel>
+
+  <!-- Add/Edit Bus Owner Modal -->
+  <div class="modal-overlay" *ngIf="showAddOwnerModal" (click)="closeAddOwnerModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ isEditMode ? 'Edit Bus Owner' : 'Add New Bus Owner' }}</h3>
+        <button class="close-btn" (click)="closeAddOwnerModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="company">Company Name <span class="required">*</span></label>
+            <input
+              type="text"
+              id="company"
+              [(ngModel)]="newOwner.company_name"
+              name="company_name"
+              class="form-control"
+              placeholder="Enter company name"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email <span class="required">*</span></label>
+            <input
+              type="email"
+              id="email"
+              [(ngModel)]="newOwner.business_email"
+              name="business_email"
+              class="form-control"
+              placeholder="Enter email address"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="contact">Contact Number <span class="required">*</span></label>
+            <input
+              type="text"
+              id="contact"
+              [(ngModel)]="newOwner.business_phone"
+              name="business_phone"
+              class="form-control"
+              placeholder="e.g., +94 77 123 4567"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="nic">NIC/Incorporation Number <span class="required">*</span></label>
+            <input
+              type="text"
+              id="nic"
+              [(ngModel)]="newOwner.identity_or_incorporation_no"
+              name="identity_or_incorporation_no"
+              class="form-control"
+              placeholder="Enter NIC or Incorporation number"
+              required
+            />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeAddOwnerModal()">Cancel</button>
+        <button class="btn-save" (click)="saveOwner()">{{ isEditMode ? 'Update Bus Owner' : 'Save Bus Owner' }}</button>
+      </div>
+    </div>
+  </div>
+</div>

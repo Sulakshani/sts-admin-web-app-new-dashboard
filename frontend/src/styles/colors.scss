@@ -1,0 +1,258 @@
+// =============================================================================
+// LIGHT MODE COLORS
+// =============================================================================
+:root {
+  // -------------------------
+  // Primary Brand Colors
+  // -------------------------
+  --primary-color: #2563eb;
+  --secondary-color: #475569;
+  --tertiary-color: #0f766e;
+
+  // -------------------------
+  // Page Backgrounds
+  // -------------------------
+  --bg-primary: #f6f8fb;              // Main page background
+  --bg-secondary: #ffffff;            // Cards, tables, content areas
+
+  // -------------------------
+  // Text Colors
+  // -------------------------
+  --text-primary: #111827;            // Main headings, primary text
+  --text-secondary: #64748b;          // Descriptions, secondary text
+  --color-text-primary: #111827;      // Alias for compatibility
+  --color-text-secondary: #64748b;    // Alias for compatibility
+  --color-text-muted: #475569;        // Links, accents
+  --color-text-inverse: #ffffff;      // Text on dark backgrounds
+
+  // -------------------------
+  // Border & Shadow
+  // -------------------------
+  --border-color: #dbe3ee;            // Standard borders
+  --color-border-light: #e2e8f0;      // Light borders for tables, inputs
+  --color-border-medium: #cbd5e1;
+  --shadow-color: rgba(15, 23, 42, 0.06);
+
+  // -------------------------
+  // Buttons & Interactive
+  // -------------------------
+  --color-buttns-light: #2563eb;      // Primary buttons
+  --color-buttns-dark: #f1f5f9;       // Secondary buttons
+  --active: #2563eb;                  // Active/selected states
+  --inactive: #d97706;                // Inactive/warning states
+  --logo:#2563eb;
+  // -------------------------
+  // Status & State Colors
+  // -------------------------
+  --color-success-400: #34d399;
+  --color-success-500: #10b981;
+  --color-success-600: #059669;
+  
+  --color-warning-400: #fad577;
+  --color-warning-500: #f59e0b;
+  
+  --color-danger-500: #ef4444;
+  --color-error-400: #f87171;
+  
+  --color-info-400: #22d3ee;
+  --color-info-500: #06b6d4;
+
+  // -------------------------
+  // Charts & Graphs
+  // -------------------------
+  --color-bargraph: #647FBC;          // Bar chart primary color
+  --color-bargraphgradient: #91ADC8;  // Bar chart gradient
+  --color-chart-p: #666666;           // Chart labels/text
+  --chart-background: #ffffff;        // Chart container background
+  --bardhart-labletext: #333333;      // Bar chart label text
+
+  // -------------------------
+  // Component Specific
+  // -------------------------
+  --statbackground: #ffffff;          // Stat cards, filters
+  --color-table-header: #f8fafc;      // Table header background
+  --searchbar-background: #ffffff;    // Search input background
+  --searchborder: #2563eb;            // Search input focus border
+  --color-toolbar-brdborder: #2563eb; // Toolbar borders
+  --color-background-primary: #f7f7f7; // Legacy compatibility
+  --color-background-secondary: #ffffff; // Legacy compatibility
+  --color-background-dark-primary: #ffffff; // Legacy compatibility
+  --color-background-dark-secondary: #f5f5f5; // Legacy compatibility
+  --gray: #a3a3a3;                    // Gray utility color
+  --color-stat: #91ADC8;              // Stat cards
+
+  // -------------------------
+  // Sidebar
+  // -------------------------
+  --sidebar-background: #ffffff;
+  --sidebar-text: #333333;
+  --sidebar-hover: #eef4ff;
+  --sidebar-active: #2563eb;
+  
+  // -------------------------
+  // Neutral Scale (for shading)
+  // -------------------------
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+  
+  // -------------------------
+  // Primary Color Scale (for variations)
+  // -------------------------
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #2563eb;
+  --color-primary-600: #1d4ed8;
+  --color-primary-700: #1e40af;
+  --color-primary-800: #1e3a8a;
+  --color-primary-900: #172554;
+  
+  // -------------------------
+  // Secondary Color Scale
+  // -------------------------
+  --color-secondary-500: #91ADC8;
+  --color-secondary-600: #64748b;
+  --color-secondary-700: #475569;
+  
+  // -------------------------
+  // Tertiary Color Scale
+  // -------------------------
+  --color-tertiary-500: #AED6CF;
+}
+
+// =============================================================================
+// DARK MODE COLORS
+// =============================================================================
+[data-theme="dark"] {
+  // -------------------------
+  // Primary Brand Colors (lighter for dark mode)
+  // -------------------------
+  --primary-color: #8BA3D7;
+  --secondary-color: #A8C5D1;
+  --tertiary-color: #C2E5DD;
+
+  // -------------------------
+  // Page Backgrounds
+  // -------------------------
+  --bg-primary: #1a1a1a;              // Main page background
+  --bg-secondary: #2d2d2d;            // Cards, tables, content areas
+
+  // -------------------------
+  // Text Colors
+  // -------------------------
+  --text-primary: #e5e5e5;            // Main headings, primary text
+  --text-secondary: #b0b0b0;          // Descriptions, secondary text
+  --color-text-primary: #e5e5e5;      // Alias for compatibility
+  --color-text-secondary: #b0b0b0;    // Alias for compatibility
+  --color-text-muted: #7BA3FF;        // Links, accents (lighter blue)
+  --color-text-inverse: #1a1a1a;      // Text on light backgrounds
+
+  // -------------------------
+  // Border & Shadow
+  // -------------------------
+  --border-color: #2d2d2d;            // Standard borders
+  --color-border-light: #3d3d3d;      // Light borders for tables, inputs
+  --shadow-color: rgba(255, 255, 255, 0.1);
+
+  // -------------------------
+  // Buttons & Interactive
+  // -------------------------
+  --color-buttns-light: #5A8EFF;      // Primary buttons (lighter)
+  --color-buttns-dark: #6d6d6d;       // Secondary buttons
+  --active: #5A8EFF;                  // Active/selected states
+  --inactive: #FAA533;                // Inactive/warning states (unchanged)
+  --logo:#235cfa;
+  // -------------------------
+  // Status & State Colors (same as light mode)
+  // -------------------------
+  --color-success-400: #34d399;
+  --color-success-500: #10b981;
+  --color-success-600: #059669;
+  
+  --color-warning-400: #fad577;
+  --color-warning-500: #f59e0b;
+  
+  --color-danger-500: #ef4444;
+  --color-error-400: #f87171;
+  
+  --color-info-400: #22d3ee;
+  --color-info-500: #06b6d4;
+
+  // -------------------------
+  // Charts & Graphs
+  // -------------------------
+  --color-bargraph: #8BA3D7;          // Bar chart primary color
+  --color-bargraphgradient: #A8C5D1;  // Bar chart gradient
+  --color-chart-p: #b0b0b0;           // Chart labels/text
+  --chart-background: #2d2d2d;        // Chart container background
+  --bardhart-labletext: #e5e5e5;      // Bar chart label text (visible)
+
+  // -------------------------
+  // Component Specific
+  // -------------------------
+  --statbackground: #2d2d2d;          // Stat cards, filters
+  --color-table-header: #2d2d2d;      // Table header background
+  --searchbar-background: #2d2d2d;    // Search input background
+  --searchborder: #5A8EFF;            // Search input focus border
+  --color-toolbar-brdborder: #5A8EFF; // Toolbar borders
+  --color-background-primary: #1e1e1e; // Legacy compatibility
+  --color-background-secondary: #2d2d2d; // Legacy compatibility
+  --color-background-dark-primary: #2d2d2d; // Legacy compatibility
+  --color-background-dark-secondary: #252525; // Legacy compatibility
+  --gray: #6d6d6d;                    // Gray utility color
+  --color-stat: #A8C5D1;              // Stat cards
+
+  // -------------------------
+  // Sidebar
+  // -------------------------
+  --sidebar-background: #1e1e1e;
+  --sidebar-text: #e5e5e5;
+  --sidebar-hover: #2d2d2d;
+  --sidebar-active: #5A8EFF;
+  
+  // -------------------------
+  // Neutral Scale (inverted for dark mode)
+  // -------------------------
+  --color-neutral-100: #2d2d2d;
+  --color-neutral-200: #3d3d3d;
+  --color-neutral-300: #4d4d4d;
+  --color-neutral-400: #6d6d6d;
+  --color-neutral-500: #8d8d8d;
+  --color-neutral-600: #b0b0b0;
+  --color-neutral-700: #d0d0d0;
+  --color-neutral-800: #e5e5e5;
+  --color-neutral-900: #f5f5f5;
+  
+  // -------------------------
+  // Primary Color Scale (lighter shades for dark mode)
+  // -------------------------
+  --color-primary-50: #2d2d2d;
+  --color-primary-100: #3d3d3d;
+  --color-primary-200: #4d4d4d;
+  --color-primary-400: #6d6d6d;
+  --color-primary-500: #8BA3D7;
+  --color-primary-600: #A8C5D1;
+  --color-primary-700: #C2E5DD;
+  --color-primary-800: #d0d0d0;
+  --color-primary-900: #e5e5e5;
+  
+  // -------------------------
+  // Secondary Color Scale
+  // -------------------------
+  --color-secondary-500: #A8C5D1;
+  --color-secondary-600: #b0b0b0;
+  --color-secondary-700: #d0d0d0;
+  
+  // -------------------------
+  // Tertiary Color Scale
+  // -------------------------
+  --color-tertiary-500: #C2E5DD;
+}

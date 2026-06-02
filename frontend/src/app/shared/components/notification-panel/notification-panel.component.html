@@ -1,0 +1,349 @@
+<div class="notification-panel-overlay" (click)="onClose()">
+  <div class="notification-panel" (click)="$event.stopPropagation()">
+    <div class="notification-header">
+      <h3>Notifications</h3>
+      <button class="close-btn" (click)="onClose()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="notification-controls">
+      <div class="notification-controls-header">
+        <div>
+          <p class="control-eyebrow">Review queue</p>
+          <h4>Filter notifications</h4>
+        </div>
+        <div class="control-summary">
+          <span class="summary-pill">{{ filteredNotifications.length }} shown</span>
+          <span class="summary-meta">of {{ notifications.length }} total</span>
+        </div>
+      </div>
+
+      <div class="notification-search">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          placeholder="Search by title, type, time, or keyword"
+          aria-label="Search notifications"
+        />
+        <button
+          type="button"
+          class="search-reset-btn"
+          *ngIf="searchQuery"
+          (click)="searchQuery = ''"
+          aria-label="Clear search">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="notification-filter-bar" aria-label="Notification type filters">
+        <button
+          type="button"
+          class="filter-chip"
+          *ngFor="let filter of notificationFilters"
+          [class.active]="selectedFilter === filter.value"
+          (click)="setFilter(filter.value)">
+          <i [class]="filter.icon"></i>
+          <span>{{ filter.label }}</span>
+          <span class="filter-count">{{ getNotificationCount(filter.value) }}</span>
+        </button>
+      </div>
+
+      <div class="notification-filter-footer" *ngIf="hasActiveFilters">
+        <span class="active-filter-label">Active: {{ activeFilterLabel }}</span>
+        <button type="button" class="clear-filters-btn" (click)="clearFilters()">
+          Clear filters
+        </button>
+      </div>
+    </div>
+
+    <div class="notification-list">
+      <div class="empty-state" *ngIf="filteredNotifications.length === 0">
+        <i class="fas fa-inbox"></i>
+        <p>No notifications found for this filter.</p>
+      </div>
+
+      <div class="notification-item" *ngFor="let notification of filteredNotifications" [attr.data-type]="notification.type">
+        <div class="notification-icon">
+          <i [class]="notification.icon"></i>
+        </div>
+        <div class="notification-content">
+          <h4 class="notification-title">{{ notification.title }}</h4>
+          <p class="notification-message">{{ notification.message }}</p>
+          <div class="notification-footer">
+            <span class="notification-time">{{ notification.time }}</span>
+            <button class="view-full-btn" (click)="viewFullNotification(notification)">
+              View full notification
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notification Details Modal -->
+<div class="notification-details-modal" *ngIf="showDetailsModal" (click)="closeDetailsModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Notification Details</h3>
+      <button class="close-btn" (click)="closeDetailsModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body" *ngIf="selectedNotification">
+      <div class="notification-icon-large">
+        <i [class]="selectedNotification.icon"></i>
+      </div>
+      <h4 class="notification-title">{{ selectedNotification.title }}</h4>
+      <p class="notification-message">{{ selectedNotification.message }}</p>
+      <span class="notification-time">{{ selectedNotification.time }}</span>
+
+      <div class="notification-details" *ngIf="selectedNotification.data">
+        <h5>Request Details:</h5>
+        <div class="details-grid">
+          <!-- Bus Details -->
+          <ng-container *ngIf="selectedNotification.type === 'bus'">
+            <div class="detail-item">
+              <span class="label">Bus Number:</span>
+              <span class="value">{{ selectedNotification.data.bus_number }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Company:</span>
+              <span class="value">{{ selectedNotification.data.company_name }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Contact:</span>
+              <span class="value">{{ selectedNotification.data.business_phone }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Permit Number:</span>
+              <span class="value">{{ selectedNotification.data.permit_number }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">License Plate:</span>
+              <span class="value">{{ selectedNotification.data.license_plate }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Bus Type:</span>
+              <span class="value">{{ selectedNotification.data.bus_type }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Total Seats:</span>
+              <span class="value">{{ selectedNotification.data.total_seats }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Route:</span>
+              <span class="value">{{ selectedNotification.data.custom_route_name }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Fare per Seat:</span>
+              <span class="value">Rs. {{ selectedNotification.data.fare_per_seat }}</span>
+            </div>
+          </ng-container>
+
+          <!-- Driver Details -->
+          <ng-container *ngIf="selectedNotification.type === 'driver'">
+            <div class="detail-item">
+              <span class="label">Name:</span>
+              <span class="value">{{ selectedNotification.data.name }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Contact:</span>
+              <span class="value">{{ selectedNotification.data.contact_number }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">License Number:</span>
+              <span class="value">{{ selectedNotification.data.license_number }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Experience:</span>
+              <span class="value">{{ selectedNotification.data.experience_years }} years</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">License Expiry:</span>
+              <span class="value">{{ selectedNotification.data.license_expiry_date }}</span>
+            </div>
+          </ng-container>
+
+          <!-- Conductor Details -->
+          <ng-container *ngIf="selectedNotification.type === 'conductor'">
+            <div class="detail-item">
+              <span class="label">Name:</span>
+              <span class="value">{{ selectedNotification.data.name }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Contact:</span>
+              <span class="value">{{ selectedNotification.data.contact_number }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">License Number:</span>
+              <span class="value">{{ selectedNotification.data.license_number }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Experience:</span>
+              <span class="value">{{ selectedNotification.data.experience_years }} years</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">License Expiry:</span>
+              <span class="value">{{ selectedNotification.data.license_expiry_date }}</span>
+            </div>
+          </ng-container>
+
+          <!-- Lounge Details -->
+          <ng-container *ngIf="selectedNotification.type === 'lounge'">
+            <div class="detail-item">
+              <span class="label">Lounge Name:</span>
+              <span class="value">{{ selectedNotification.data.lounge_name }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Owner:</span>
+              <span class="value">{{ selectedNotification.data.lounge_owner }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Contact:</span>
+              <span class="value">{{ selectedNotification.data.lounge_contact }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Address:</span>
+              <span class="value">{{ selectedNotification.data.address }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Capacity:</span>
+              <span class="value">{{ selectedNotification.data.capacity }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Price per Hour:</span>
+              <span class="value">Rs. {{ selectedNotification.data.price_per_hour }}</span>
+            </div>
+          </ng-container>
+
+          <!-- Bus Owner Details -->
+          <ng-container *ngIf="selectedNotification.type === 'bus-owner'">
+            <div class="detail-item">
+              <span class="label">Company Name:</span>
+              <span class="value">{{ selectedNotification.data.company_name }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Business Email:</span>
+              <span class="value">{{ selectedNotification.data.business_email }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Business Phone:</span>
+              <span class="value">{{ selectedNotification.data.business_phone }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">NIC/Incorporation No:</span>
+              <span class="value">{{ selectedNotification.data.identity_or_incorporation_no }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Verification Status:</span>
+              <span class="value">{{ selectedNotification.data.verification_status }}</span>
+            </div>
+          </ng-container>
+
+          <!-- Lounge Owner Details -->
+          <ng-container *ngIf="selectedNotification.type === 'lounge-owner'">
+            <div class="detail-item">
+              <span class="label">Manager Name:</span>
+              <span class="value">{{ selectedNotification.data.manager_full_name }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Email:</span>
+              <span class="value">{{ selectedNotification.data.email }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Contact Number:</span>
+              <span class="value">{{ selectedNotification.data.contact_number }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">NIC:</span>
+              <span class="value">{{ selectedNotification.data.nic }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Business Name:</span>
+              <span class="value">{{ selectedNotification.data.business_name }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Business License:</span>
+              <span class="value">{{ selectedNotification.data.business_license }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Verification Status:</span>
+              <span class="value">{{ selectedNotification.data.verification_status }}</span>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="documents-section">
+        <label for="adminDocuments">Documents <span class="required">*</span></label>
+        <textarea
+          id="adminDocuments"
+          [(ngModel)]="adminDocuments"
+          placeholder="Enter the Google Drive link or verification document details here..."
+          rows="4"
+        ></textarea>
+        <small class="field-hint">Please provide the document link or details before approving the request.</small>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" (click)="openRejectModal()">Reject</button>
+        <button class="btn-primary" (click)="approveRequest()">Approve Request</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Rejection Modal -->
+<div class="rejection-modal-overlay" *ngIf="showRejectModal" (click)="closeRejectModal()">
+  <div class="rejection-modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Reject Request</h3>
+      <button class="close-btn" (click)="closeRejectModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="rejection-modal-body">
+      <p class="rejection-message">Please provide a reason for rejecting this request:</p>
+      <textarea
+        [(ngModel)]="rejectReason"
+        placeholder="Enter rejection reason here..."
+        rows="4"
+      ></textarea>
+      <div class="rejection-actions">
+        <button class="btn-cancel" (click)="closeRejectModal()">Cancel</button>
+        <button class="btn-reject" (click)="confirmRejectRequest()">Confirm Rejection</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Success Modal -->
+<div class="success-modal-overlay" *ngIf="showSuccessModal" (click)="closeSuccessModal()">
+  <div class="success-modal-content" (click)="$event.stopPropagation()">
+    <div class="success-icon" *ngIf="!isRejectionSuccess">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="32" fill="#10B981"/>
+        <path d="M20 32L28 40L44 24" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="rejection-icon" *ngIf="isRejectionSuccess">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="32" fill="#EF4444"/>
+        <path d="M20 20L44 44M44 20L20 44" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h2>{{ successModalTitle }}</h2>
+    <p>{{ successModalMessage }}</p>
+    <button class="btn-success" (click)="sendApproval()">OK</button>
+  </div>
+</div>

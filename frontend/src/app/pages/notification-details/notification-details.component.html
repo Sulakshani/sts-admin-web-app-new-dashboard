@@ -1,0 +1,155 @@
+<div class="notification-details-container">
+  <div class="top-navigation-row">
+    <div class="app-branding">
+      <div class="logo-circle">
+        <i class="fas fa-bell"></i>
+      </div>
+      <span class="app-name">Notifications</span>
+    </div>
+    <app-navbar></app-navbar>
+    <div class="header-actions">
+      <button class="icon-btn notification-btn" (click)="toggleNotificationPanel()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+        </svg>
+        <span *ngIf="notificationService.totalPendingCount > 0" class="notification-badge">{{ notificationService.totalPendingCount }}</span>
+      </button>
+      
+      <div class="profile-dropdown-container">
+        <button class="icon-btn profile-btn" (click)="toggleProfileMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </button>
+        <div class="dropdown-menu" *ngIf="showProfileMenu">
+          <a routerLink="/settings" class="dropdown-item">
+            <i class="fas fa-cog"></i> Profile setting
+          </a>
+          <a (click)="logout()" class="dropdown-item">
+            <i class="fas fa-sign-out-alt"></i> Log out
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="details-page">
+    <!-- Back Navigation -->
+    <nav class="quick-nav">
+      <span class="qn-root" (click)="goBack()">Dashboard</span>
+      <span class="qn-sep" aria-hidden="true">›</span>
+      <span class="qn-current">Notification Details</span>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <h1>{{ notification?.title }}</h1>
+      <p class="notification-time">{{ notification?.time }}</p>
+    </div>
+
+    <!-- Notification Details Card -->
+    <div class="details-card" *ngIf="notification">
+      <div class="card-header">
+        <div class="type-badge" [attr.data-type]="notification.type">
+          {{ notification.type | uppercase }}
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="message-section">
+          <h3>Request Message</h3>
+          <p>{{ notification.message }}</p>
+        </div>
+
+        <div class="form-section">
+          <h3>Details</h3>
+          <div class="form-grid">
+            <div class="form-field" *ngFor="let field of getFormFields()">
+              <label>{{ field.label }}</label>
+              <div class="field-value" *ngIf="!isArray(field.value)">
+                {{ field.value }}
+              </div>
+              <div class="field-value tags" *ngIf="isArray(field.value)">
+                <span class="tag" *ngFor="let item of field.value">{{ item }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Documents Section (Admin fills) -->
+        <div class="documents-section">
+          <h3>Documents <span class="required">*</span></h3>
+          <p class="field-description">Please provide the verification documents or notes for this request.</p>
+          <textarea 
+            [(ngModel)]="adminDocuments" 
+            placeholder="Enter document details, links, or verification notes here..."
+            class="documents-textarea"
+            rows="4"></textarea>
+        </div>
+
+        <!-- Actions -->
+        <div class="action-buttons">
+          <button class="btn btn-cancel" (click)="cancelRequest()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="15" y1="9" x2="9" y2="15"></line>
+              <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+            Cancel Request
+          </button>
+          <button class="btn btn-approve" (click)="approveRequest()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Approve Request
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notification Panel -->
+<app-notification-panel *ngIf="showNotificationPanel" (close)="closeNotificationPanel()"></app-notification-panel>
+
+<!-- Success Modal -->
+<div class="modal-overlay" *ngIf="showSuccessModal">
+  <div class="modal-content">
+    <h2>{{ successModalTitle }}</h2>
+    <p class="modal-message">{{ successModalMessage }}</p>
+    <div class="modal-actions">
+      <button class="btn-send" (click)="sendApproval()">OK</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cancel Modal -->
+<div class="modal-overlay" *ngIf="showCancelModal">
+  <div class="modal-content cancel-modal">
+    <h2>{{ cancelModalTitle }}</h2>
+    <p class="modal-message">{{ cancelModalMessage }}</p>
+    
+    <div class="reasons-section">
+      <p class="reasons-label">Reasons:</p>
+      <div class="checkbox-group">
+        <div class="checkbox-item" *ngFor="let reason of cancellationReasons; let i = index">
+          <input type="checkbox" [id]="'reason-' + i" [(ngModel)]="selectedReasons[reason]">
+          <label [for]="'reason-' + i">{{ reason }}</label>
+        </div>
+        <div class="checkbox-item">
+          <input type="checkbox" id="reason-other" [(ngModel)]="selectedReasons['Other']">
+          <label for="reason-other">Other:</label>
+        </div>
+      </div>
+      
+      <div class="other-reason-input" *ngIf="selectedReasons['Other']">
+        <textarea [(ngModel)]="otherReasonText" placeholder="-Can you check the details correctly and resubmit the form"></textarea>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-send" (click)="sendCancellation()">Send</button>
+      <button class="btn-cancel-modal" (click)="closeCancelModal()">Cancel</button>
+    </div>
+  </div>
+</div>

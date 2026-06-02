@@ -1,0 +1,208 @@
+.sidebar {
+  background: var(--sidebar-background); // White background as requested
+  color: var(--sidebar-text);
+  height: 100vh;
+  padding: 12px;
+  border-radius: 0;
+  width: 260px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  box-shadow: none;
+  border-right: 1px solid var(--border-color);
+  transition: width 180ms ease;
+}
+.sidebar-collapsed { width: 72px; }
+
+.sidebar-header { 
+  display: flex; 
+  align-items: center; 
+  justify-content: left; 
+  margin-bottom: 10px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.sidebar-collapsed .sidebar-header {
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo { 
+  display: flex; 
+  align-items: center; 
+  gap: 1px; 
+  font-weight: 500;
+  padding-left: 1px;
+  font-size: 20px; 
+}
+.toggle-btn {
+  background: transparent;
+  color: var(--color-buttns-light);
+  border: 1px solid var(--color-buttns-light);
+  border-radius: 8px;
+  padding: 6px;
+  cursor: pointer;
+  margin-left: 6px;
+  flex-shrink: 0;
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+
+  &:hover {
+    background: var(--sidebar-hover);
+  }
+}
+
+.sidebar-collapsed .toggle-btn {
+  margin-left: 0;
+}
+
+.mode-toggle-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: background-color 180ms ease, color 180ms ease;
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+
+  &:hover {
+    background-color: var(--sidebar-hover);
+    color: var(--sidebar-active);
+  }
+
+  svg {
+    width: 25px;
+    height: 25px;
+    color: var(--color-text-secondary);
+  }
+}
+.sidebar-nav .nav-list { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 12px; }
+.nav-item .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  color: var(--sidebar-text);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  transition: all 180ms ease;
+  justify-content: flex-start;
+
+  svg {
+    color: var(--color-text-muted);
+  }
+
+  .expand-icon {
+    transition: transform 0.3s ease;
+    margin-left: auto;
+
+    &.expanded {
+      transform: rotate(180deg);
+    }
+  }
+
+  &:hover {
+    background: var(--sidebar-hover);
+    color: var(--sidebar-active);
+  }
+}
+
+.bus-staff-nav-item .nav-link:hover {
+  background: transparent;
+  color: var(--sidebar-text) !important;
+}
+
+.nav-item.active .nav-link {
+  background: var(--sidebar-hover);
+  color: var(--sidebar-active);
+  font-weight: 500;
+  box-shadow: inset 3px 0 0 var(--sidebar-active);
+
+  svg {
+    color: var(--sidebar-active);
+  }
+}
+.nav-item .nav-link:hover { filter: brightness(1.05); }
+
+.nav-item.expanded .nav-link {
+  
+  border-color: var(--color-neutral-400);
+}
+
+.sub-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 2px 0 0 0;
+}
+
+.sub-nav-item {
+  margin: 4px 0;
+}
+
+.bus-staff-label {
+  font-weight: 500;
+  color: var(--sidebar-text) !important;
+}
+
+.sub-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px 12px 40px;
+  border-radius: 8px;
+  color: var(--sidebar-text);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  transition: all 180ms ease;
+  justify-content: flex-start;
+  font-size: 14px;
+
+  svg {
+    color: var(--color-text-muted);
+  }
+
+  &:hover {
+    background: var(--sidebar-hover);
+    color: var(--sidebar-active);
+  }
+
+  &.active {
+    background: var(--sidebar-hover);
+    color: var(--sidebar-active);
+    font-weight: 500;
+
+    svg {
+      color: var(--sidebar-active);
+    }
+  }
+}
+
+.sidebar-footer { margin-top: 16px; }
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  background: var(--color-background-dark-primary);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+
+  &:hover {
+    background: var(--sidebar-hover);
+    color: var(--sidebar-active);
+    border-color: var(--sidebar-active);
+  }
+  
+}
+
+

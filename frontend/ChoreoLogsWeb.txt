@@ -1,0 +1,193 @@
+
+Login Succeeded!
+[1/2] STEP 1/6: FROM node:20 AS build
+Resolved "node" as an alias (/etc/containers/registries.conf.d/shortnames.conf)
+Trying to pull docker.io/library/node:20...
+Getting image source signatures
+Copying blob sha256:e6819020f2779f375960349b3422c5fe0dfe818d9e80bd6a6f7b74f032b88513
+Copying blob sha256:bb445e472b1bad54f5a28edd51b11aec79eca8513394866a261891be9da6a343
+Copying blob sha256:5d93aea697980315f27f81c68582d14f63dd3579c2d3a27dc495a588279eda20
+Copying blob sha256:2123190679e81d983648da92f1bb9ddc74383512edb00ad64f93d24d00d8807a
+Copying blob sha256:32885a2b0a589e832bf6b250bd35a528b268360f166af2cd7094d3a14993fcc1
+Copying blob sha256:fb9baa9d1d1df57d8d063960d7beea8198b17a719381ed80532d617d3d302fa7
+Copying blob sha256:de002888bed8164550e7a9de5858c8940ba5f45c133a7ba12b83bb4efba51dd1
+Copying blob sha256:b82a1e14a32dee2b4a701dc4bee2e6a33e5728a76465e71d9be67bc9d3954ccd
+Copying config sha256:bcdd5c4345ce4aaadf921c9e4f6773c1554171e357a81825bc81946697756cac
+Writing manifest to image destination
+[1/2] STEP 2/6: WORKDIR /app
+--> 20ff3a03a5e9
+[1/2] STEP 3/6: COPY package*.json ./
+--> eeb36e4be269
+[1/2] STEP 4/6: RUN npm ci --legacy-peer-deps
+npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+
+added 647 packages, and audited 648 packages in 10s
+
+109 packages are looking for funding
+  run `npm fund` for details
+
+4 vulnerabilities (1 low, 1 moderate, 2 high)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.6.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.2
+npm notice To update run: npm install -g npm@11.6.2
+npm notice
+--> 9be3a9992b38
+[1/2] STEP 5/6: COPY . .
+--> ec18fc4f718d
+[1/2] STEP 6/6: RUN npm run build
+
+> my-angular-app@0.0.0 build
+> ng build
+
+â¯ Building...
+â Building...
+Initial chunk files | Names         |  Raw size | Estimated transfer size
+main-XZMC2LXA.js    | main          |   2.18 MB |               448.32 kB
+styles-VIZFSA55.css | styles        |  94.46 kB |                20.03 kB
+chunk-C6Q5SG76.js   | -             |   1.07 kB |               468 bytes
+chunk-FK6H3RFT.js   | -             | 272 bytes |               272 bytes
+
+                    | Initial total |   2.28 MB |               469.09 kB
+
+Lazy chunk files    | Names         |  Raw size | Estimated transfer size
+chunk-GPXMSDNG.js   | html2canvas   | 203.21 kB |                38.58 kB
+chunk-JVLYWMI2.js   | index-es      | 158.64 kB |                46.81 kB
+chunk-KLQF5WWL.js   | purify-es     |  21.56 kB |                 7.59 kB
+
+Application bundle generation failed. [13.550 seconds]
+
+â² [WARNING] bundle initial exceeded maximum budget. Budget 1.00 MB was not met by 1.28 MB with a total of 2.28 MB.
+
+
+â² [WARNING] src/app/pages/conductor-management/conductor-management.component.scss exceeded maximum budget. Budget 8.00 kB was not met by 3.67 kB with a total of 11.67 kB.
+
+
+â² [WARNING] src/app/pages/lounge-management/lounges-management.component.scss exceeded maximum budget. Budget 8.00 kB was not met by 25 bytes with a total of 8.03 kB.
+
+
+â² [WARNING] src/app/pages/bus-management/bus-management.component.scss exceeded maximum budget. Budget 8.00 kB was not met by 3.03 kB with a total of 11.03 kB.
+
+
+â² [WARNING] src/app/pages/passenger-management/passenger-management.component.scss exceeded maximum budget. Budget 8.00 kB was not met by 779 bytes with a total of 8.78 kB.
+
+
+â² [WARNING] src/app/pages/driver-management/driver-management.component.scss exceeded maximum budget. Budget 8.00 kB was not met by 4.54 kB with a total of 12.54 kB.
+
+
+â² [WARNING] Module 'core-js/modules/es.promise.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+â² [WARNING] Module 'core-js/modules/es.string.match.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+â² [WARNING] Module 'core-js/modules/es.string.replace.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+â² [WARNING] Module 'core-js/modules/es.string.starts-with.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+â² [WARNING] Module 'core-js/modules/es.array.iterator.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+â² [WARNING] Module 'core-js/modules/web.dom-collections.iterator.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+â² [WARNING] Module 'core-js/modules/es.array.reduce.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+â² [WARNING] Module 'core-js/modules/es.string.ends-with.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+â² [WARNING] Module 'core-js/modules/es.string.split.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+â² [WARNING] Module 'raf' used by 'node_modules/canvg/lib/index.es.js' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+â² [WARNING] Module 'core-js/modules/es.string.trim.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+â² [WARNING] Module 'rgbcolor' used by 'node_modules/canvg/lib/index.es.js' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+â² [WARNING] Module 'core-js/modules/es.array.index-of.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+â² [WARNING] Module 'core-js/modules/es.string.includes.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+â² [WARNING] Module 'core-js/modules/es.array.reverse.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+â² [WARNING] Module 'core-js/modules/es.regexp.to-string.js' used by 'node_modules/canvg/lib/index.es.js' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+â² [WARNING] Module 'html2canvas' used by 'node_modules/jspdf/dist/jspdf.es.min.js' is not ESM
+
+  CommonJS or AMD dependencies can cause optimization bailouts.
+  For more information see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+â [ERROR] bundle initial exceeded maximum budget. Budget 2.00 MB was not met by 277.18 kB with a total of 2.28 MB.
+
+
+Error: building at STEP "RUN npm run build": while running runtime: exit status 1
+time="2025-11-12T03:14:17.601Z" level=info msg="sub-process exited" argo=true error="<nil>"
+time="2025-11-12T03:14:17.602Z" level=info msg="not saving outputs - not main container" argo=true
+Error: exit status 1

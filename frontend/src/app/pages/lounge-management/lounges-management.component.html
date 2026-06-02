@@ -1,0 +1,269 @@
+<div class="lounge-container">
+  <div class="top-navigation-row">
+    <div class="app-branding">
+      <div class="logo-circle">
+        <i class="fas fa-couch"></i>
+      </div>
+      <span class="app-name">BusLounge</span>
+    </div>
+    <app-navbar></app-navbar>
+    <div class="header-actions">
+      <button class="icon-btn notification-btn" (click)="toggleNotificationPanel()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+        </svg>
+        <span *ngIf="notificationService.totalPendingCount > 0" class="notification-badge">{{ notificationService.totalPendingCount }}</span>
+      </button>
+      <div class="profile-dropdown-container">
+        <button class="icon-btn profile-btn" (click)="toggleProfileMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </button>
+        <div class="dropdown-menu" *ngIf="showProfileMenu">
+          <a routerLink="/settings" class="dropdown-item">
+            <i class="fas fa-cog"></i> Profile setting
+          </a>
+          <a (click)="logout()" class="dropdown-item">
+            <i class="fas fa-sign-out-alt"></i> Log out
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-header">
+    <div class="header-content">
+      <h2>Lounge Management</h2>
+    </div>
+    <div class="header-actions">
+      <button class="add-lounge-btn" (click)="addLounge()">Add Lounge</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <section class="charts">
+      <div class="chart-card">
+        <h3>Lounge Capacity and Pricing Comparison</h3>
+        <div class="bar-chart">
+          <canvas *ngIf="isBrowser" baseChart [data]="barChartData[0]" [options]="barChartOptions" type="bar"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h3>Food, Drinks, and Shower Availability</h3>
+        <div class="bar-chart">
+          <canvas *ngIf="isBrowser" baseChart [data]="barChartData[1]" [options]="barChartOptions" type="bar"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h3>Amenities Availability Across Lounges</h3>
+        <div class="bar-chart">
+          <canvas *ngIf="isBrowser" baseChart [data]="barChartData[2]" [options]="barChartOptions" type="bar"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="toolbar">
+      <div class="search-group">
+        <input type="text" placeholder="Search by name, address, lounge contact" [(ngModel)]="searchTerm" (input)="onSearchChange()" />
+        <input type="number" placeholder="Price / hr ($)" [(ngModel)]="priceFilter" (input)="onSearchChange()" style="margin-left: 0.1rem; width: 80px; color: var(--color-text-muted);" />
+      </div>
+      <button class="export-btn" (click)="exportLoungeHistoryPdf()">Export Lounge History</button>
+    </section>
+
+    <section class="table-section">
+      <div class="table">
+        <div class="row header">
+          <div class="col" (click)="onSort('lounge_id')" style="cursor: pointer;" title="Click to sort">
+            LoungeID {{ getSortIcon('lounge_id') }}
+          </div>
+          <div class="col" (click)="onSort('lounge_owner')" style="cursor: pointer;" title="Click to sort">
+            Lounge Owner {{ getSortIcon('lounge_owner') }}
+          </div>
+          <div class="col" (click)="onSort('lounge_name')" style="cursor: pointer;" title="Click to sort">
+            Lounge Name {{ getSortIcon('lounge_name') }}
+          </div>
+          <div class="col" (click)="onSort('lounge_contact')" style="cursor: pointer;" title="Click to sort">
+            Lounge Contact {{ getSortIcon('lounge_contact') }}
+          </div>
+          <div class="col" (click)="onSort('address')" style="cursor: pointer;" title="Click to sort">
+            Address {{ getSortIcon('address') }}
+          </div>
+          <div class="col num" (click)="onSort('capacity')" style="cursor: pointer;" title="Click to sort">
+            Capacity {{ getSortIcon('capacity') }}
+          </div>
+          <div class="col num" (click)="onSort('price_per_hour')" style="cursor: pointer;" title="Click to sort">
+            Price/hour {{ getSortIcon('price_per_hour') }}
+          </div>
+          <div class="col" (click)="onSort('operational')" style="cursor: pointer;" title="Click to sort">
+            Operational {{ getSortIcon('operational') }}
+          </div>
+          <div class="col" (click)="onSort('verification')" style="cursor: pointer;" title="Click to sort">
+            Verification {{ getSortIcon('verification') }}
+          </div>
+          <div class="col" (click)="onSort('verification_note')" style="cursor: pointer;" title="Click to sort">
+            Verification note {{ getSortIcon('verification_note') }}
+          </div>
+          <div class="col actions">Action</div>
+        </div>
+
+        <div class="row" *ngFor="let l of filteredLounges">
+          <div class="col">{{ l.lounge_id }}</div>
+          <div class="col">{{ l.lounge_owner }}</div>
+          <div class="col">{{ l.lounge_name }}</div>
+          <div class="col">{{ l.lounge_contact }}</div>
+          <div class="col">{{ l.address }}</div>
+          <div class="col num">{{ l.capacity }}</div>
+          <div class="col num">{{ l.price_per_hour }}</div>
+          <div class="col">{{ l.operational ? 'Open' : 'Closed' }}</div>
+          <div class="col">{{ l.verification }}</div>
+          <div class="col">
+            <div *ngIf="l.verification?.toLowerCase() === 'approved' || l.verification?.toLowerCase() === 'verified'">
+              <div *ngIf="l.verification_note && l.verification_note.trim(); else noDocuments">
+                <a [href]="l.verification_note" target="_blank" class="document-link" title="Open document">
+                  <i class="fas fa-external-link-alt"></i> Document 1
+                </a>
+              </div>
+              <ng-template #noDocuments>
+                <span class="no-documents">No documents</span>
+              </ng-template>
+            </div>
+            <span *ngIf="l.verification?.toLowerCase() === 'rejected'" class="no-documents">-</span>
+            <span *ngIf="l.verification?.toLowerCase() === 'pending'" class="no-documents">Pending approval</span>
+          </div>
+          <div class="col actions">
+            <i class="fas fa-eye action-icon view-icon" (click)="view(l)" title="View"></i>
+            <i class="fas fa-edit action-icon edit-icon" (click)="update(l)" title="Edit"></i>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Add/View Lounge Modal -->
+<div class="modal-overlay" *ngIf="showModal" (click)="cancelAddLounge()">
+  <div class="edit-container" (click)="$event.stopPropagation()">
+    <h2>{{ modalMode === 'add' ? 'Add Lounge' : modalMode === 'edit' ? 'Edit Lounge' : 'View Lounge' }}</h2>
+
+    <form (ngSubmit)="modalMode === 'add' || modalMode === 'edit' ? saveAddLounge() : null">
+      
+      <h3 class="section-title">Lounge Owner Details</h3>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Owner Name</label>
+          <input [(ngModel)]="lounge.lounge_owner" name="lounge_owner" required [readonly]="modalMode === 'view'" />
+        </div>
+        <div class="form-row">
+          <label>NIC Number</label>
+          <input [(ngModel)]="lounge.owner_nic" name="owner_nic" required [readonly]="modalMode === 'view'" />
+        </div>
+        <div class="form-row">
+          <label>Email</label>
+          <input type="email" [(ngModel)]="lounge.owner_email" name="owner_email" required [readonly]="modalMode === 'view'" />
+        </div>
+        <div class="form-row">
+          <label>Contact</label>
+          <input [(ngModel)]="lounge.owner_contact" name="owner_contact" required [readonly]="modalMode === 'view'" />
+        </div>
+      </div>
+
+      <h3 class="section-title">Lounge Details</h3>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Lounge Name</label>
+          <input [(ngModel)]="lounge.lounge_name" name="lounge_name" required [readonly]="modalMode === 'view'" />
+        </div>
+        <div class="form-row">
+          <label>Lounge Contact</label>
+          <input [(ngModel)]="lounge.lounge_contact" name="lounge_contact" required [readonly]="modalMode === 'view'" />
+        </div>
+        <div class="form-row">
+          <label>Address</label>
+          <input [(ngModel)]="lounge.address" name="address" required [readonly]="modalMode === 'view'" />
+        </div>
+        <div class="form-row">
+          <label>Price per Hour</label>
+          <input type="number" [(ngModel)]="lounge.price_per_hour" name="price_per_hour" required [readonly]="modalMode === 'view'" />
+        </div>
+        <div class="form-row">
+          <label>Capacity</label>
+          <input type="number" [(ngModel)]="lounge.capacity" name="capacity" required [readonly]="modalMode === 'view'" />
+        </div>
+        <div class="form-row">
+          <label>Operational Status</label>
+          <select [(ngModel)]="lounge.operational" name="operational" required [disabled]="modalMode === 'view'">
+            <option [ngValue]="true">Open</option>
+            <option [ngValue]="false">Closed</option>
+          </select>
+        </div>
+        <div class="form-row full-width">
+          <label>Verification Note</label>
+          <textarea [(ngModel)]="lounge.verification_note" name="verification_note" rows="3" placeholder="Enter verification notes..." [readonly]="modalMode === 'view'"></textarea>
+        </div>
+      </div>
+
+      <!-- Image Upload -->
+      <div class="form-row full-width" *ngIf="modalMode === 'add' || modalMode === 'edit'">
+        <label for="imageUpload">Upload Images</label>
+        <input type="file" id="imageUpload" name="images" (change)="onFileSelected($event)" multiple accept="image/*" />
+        <div class="image-preview" *ngIf="imagePreviews.length > 0">
+          <div *ngFor="let img of imagePreviews" class="image-thumb">
+            <img [src]="img" alt="Lounge Image" />
+          </div>
+        </div>
+      </div>
+      <div class="form-row full-width" *ngIf="modalMode === 'view' && imagePreviews.length > 0">
+        <label>Images</label>
+        <div class="image-preview">
+          <div *ngFor="let img of imagePreviews" class="image-thumb">
+            <img [src]="img" alt="Lounge Image" />
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- Amenities -->
+      <div class="form-row full-width" *ngIf="modalMode === 'add'">
+        <label>Amenities</label>
+        <div class="checkbox-grid">
+          <div *ngFor="let amenity of availableAmenities" class="checkbox-item">
+            <input
+              type="checkbox"
+              [checked]="selectedAmenities.includes(amenity)"
+              (change)="toggleAmenity(amenity)"
+              id="amenity-{{amenity}}"
+            />
+            <label for="amenity-{{amenity}}">{{ formatAmenity(amenity) }}</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Marketplace Category -->
+      <div class="form-row full-width" *ngIf="modalMode === 'add'">
+        <label>Marketplace Category</label>
+        <div class="checkbox-grid">
+          <div *ngFor="let cat of availableServices" class="checkbox-item">
+            <input
+              type="checkbox"
+              [checked]="selectedMarketplaceItems.includes(cat)"
+              (change)="toggleMarketplaceItem(cat)"
+              id="cat-{{cat}}"
+            />
+            <label for="cat-{{cat}}">{{ cat }}</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" (click)="cancelAddLounge()">{{ modalMode === 'add' || modalMode === 'edit' ? 'Cancel' : 'Close' }}</button>
+        <button type="submit" *ngIf="modalMode === 'add' || modalMode === 'edit'" [disabled]="!isLoungeFormValid()">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Notification Panel -->
+<app-notification-panel *ngIf="showNotificationPanel" (close)="closeNotificationPanel()"></app-notification-panel>

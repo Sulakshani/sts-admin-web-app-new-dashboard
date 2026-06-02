@@ -1,0 +1,276 @@
+
+<div class="bus-booking-container">
+  <div class="top-navigation-row">
+    <div class="app-branding">
+      <div class="logo-circle">
+        <i class="fas fa-bus"></i>
+      </div>
+      <span class="app-name">BusLounge</span>
+    </div>
+    <app-navbar></app-navbar>
+    <div class="header-actions">
+      <button class="icon-btn notification-btn" (click)="toggleNotificationPanel()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+        </svg>
+        <span *ngIf="notificationService.totalPendingCount > 0" class="notification-badge">{{ notificationService.totalPendingCount }}</span>
+      </button>
+      <div class="profile-dropdown-container">
+        <button class="icon-btn profile-btn" (click)="toggleProfileMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </button>
+        <div class="dropdown-menu" *ngIf="showProfileMenu">
+          <a routerLink="/settings" class="dropdown-item">
+            <i class="fas fa-cog"></i> Profile setting
+          </a>
+          <a (click)="logout()" class="dropdown-item">
+            <i class="fas fa-sign-out-alt"></i> Log out
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-header">
+    <div class="header-content">
+      <h2>Bus Booking Management</h2>
+    </div>
+    <div class="header-actions">
+      <button class="add-btn" (click)="openAddModal()">+ Add Bus Booking</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <section class="charts">
+      <div class="chart-card">
+        <h3>Payment Status</h3>
+        <canvas *ngIf="isBrowser" baseChart
+                [data]="barChartData[0]"
+                [options]="barChartOptions"
+                type="bar">
+        </canvas>
+      </div>
+
+      <div class="chart-card">
+        <h3>Booking Status</h3>
+        <canvas *ngIf="isBrowser" baseChart
+                [data]="barChartData[1]"
+                [options]="barChartOptions"
+                type="bar">
+        </canvas>
+      </div>
+
+      <div class="chart-card">
+        <h3>Monthly Paid Revenue</h3>
+        <canvas *ngIf="isBrowser" baseChart
+                [data]="barChartData[2]"
+                [options]="barChartOptions"
+                type="bar">
+        </canvas>
+      </div>
+    </section>
+
+    <section class="filters" style="display: flex; align-items: center; gap: 0.5rem; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <input type="text" placeholder="Search (ID, Passenger, Bus, Route, Seats)" [(ngModel)]="searchTerm" (input)="applyFilters()" />
+        <select [(ngModel)]="paymentFilter" (change)="applyFilters()">
+          <option>All</option>
+          <option>Pending</option>
+          <option>Paid</option>
+          <option>Failed</option>
+          <option>Refunded</option>
+        </select>
+        <select [(ngModel)]="statusFilter" (change)="applyFilters()">
+          <option>All</option>
+          <option>Confirmed</option>
+          <option>Pending</option>
+          <option>Cancelled</option>
+          <option>Completed</option>
+        </select>
+      </div>
+      <button class="export-btn" (click)="exportBusBookingHistoryPdf()">Export Bus Booking History</button>
+    </section>
+
+    <section class="table-section">
+      <div class="table">
+        <div class="row header">
+          <div class="col" (click)="onSort('booking_id')" style="cursor: pointer;" title="Click to sort">
+            Booking ID {{ getSortIcon('booking_id') }}
+          </div>
+          <div class="col" (click)="onSort('bus_number')" style="cursor: pointer;" title="Click to sort">
+            Bus Number {{ getSortIcon('bus_number') }}
+          </div>
+          <div class="col" (click)="onSort('passenger_name')" style="cursor: pointer;" title="Click to sort">
+            Passenger Name {{ getSortIcon('passenger_name') }}
+          </div>
+          <div class="col" (click)="onSort('passenger_phone')" style="cursor: pointer;" title="Click to sort">
+            Passenger Phone {{ getSortIcon('passenger_phone') }}
+          </div>
+          <div class="col" (click)="onSort('booking_reference')" style="cursor: pointer;" title="Click to sort">
+            Ref NUM {{ getSortIcon('booking_reference') }}
+          </div>
+          <div class="col" (click)="onSort('route')" style="cursor: pointer;" title="Click to sort">
+            Route {{ getSortIcon('route') }}
+          </div>
+          <div class="col" (click)="onSort('departure_datetime')" style="cursor: pointer;" title="Click to sort">
+            Date & Time {{ getSortIcon('departure_datetime') }}
+          </div>
+          <div class="col" (click)="onSort('bus_type')" style="cursor: pointer;" title="Click to sort">
+            Bus Type {{ getSortIcon('bus_type') }}
+          </div>
+          <div class="col" (click)="onSort('seat_number')" style="cursor: pointer;" title="Click to sort">
+            Seat No {{ getSortIcon('seat_number') }}
+          </div>
+          <div class="col" (click)="onSort('total_fare')" style="cursor: pointer;" title="Click to sort">
+            Total Fare {{ getSortIcon('total_fare') }}
+          </div>
+          <div class="col" (click)="onSort('payment_status')" style="cursor: pointer;" title="Click to sort">
+            Payment Status {{ getSortIcon('payment_status') }}
+          </div>
+          <div class="col" (click)="onSort('booking_status')" style="cursor: pointer;" title="Click to sort">
+            Booking Status {{ getSortIcon('booking_status') }}
+          </div>
+          <div class="col actions-col">Actions</div>
+        </div>
+        <div class="row" *ngFor="let b of filtered">
+          <div class="col">{{ b.booking_id }}</div>
+          <div class="col">{{ b.bus_number }}</div>
+          <div class="col">{{ b.passenger_name }}</div>
+          <div class="col">{{ b.passenger_phone || '-' }}</div>
+          <div class="col">{{ b.booking_reference || '-' }}</div>
+          <div class="col">{{ b.route }}</div>
+          <div class="col">{{ b.departure_datetime | date: 'medium' }}</div>
+          <div class="col">{{ b.bus_type || '-' }}</div>
+          <div class="col">{{ b.seat_number }}</div>
+          <div class="col">{{ b.total_fare }}</div>
+          <div class="col center-align">
+            <select [(ngModel)]="b.payment_status" (change)="onPaymentStatusChange(b)" [class]="'status-dropdown ' + b.payment_status">
+              <option value="paid">Paid</option>
+              <option value="pending">Pending</option>
+              <option value="failed">Failed</option>
+              <option value="refunded">Refunded</option>
+              <option value="collect_on_bus">Collect on Bus</option>
+            </select>
+          </div>
+          <div class="col center-align">
+            <select [(ngModel)]="b.booking_status" (change)="onBookingStatusChange(b)" [class]="'status-dropdown ' + b.booking_status">
+              <option value="confirmed">Confirmed</option>
+              <option value="pending">Pending</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+          <div class="col actions-col">
+            <i class="fas fa-edit action-icon" (click)="updateBooking(b)" title="Edit"></i>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- Edit/Add Bus Booking Modal -->
+<div class="modal-overlay" *ngIf="showEditModal" (click)="closeEditModal()">
+  <div class="edit-container" (click)="$event.stopPropagation()">
+    <h2>{{ isEditMode ? 'Edit Bus Booking' : 'Add Bus Booking' }}</h2>
+    <form (ngSubmit)="saveBooking()" *ngIf="selectedBooking" class="form-grid">
+      
+      <!-- Booking ID (Readonly, Edit Mode Only) -->
+      <div class="form-row" *ngIf="isEditMode">
+        <label>Booking ID</label>
+        <input [value]="selectedBooking.booking_id" readonly />
+      </div>
+
+      <!-- Bus ID -->
+      <div class="form-row" *ngIf="isEditMode">
+        <label>Bus ID</label>
+        <input type="text" [(ngModel)]="selectedBooking.bus_number" name="bus_number" required />
+      </div>
+
+      <!-- Passenger Name -->
+      <div class="form-row">
+        <label>Passenger Name</label>
+        <input type="text" [(ngModel)]="selectedBooking.passenger_name" name="passenger_name" required />
+      </div>
+
+      <!-- Passenger Phone -->
+      <div class="form-row">
+        <label>Passenger Phone</label>
+        <input type="text" [(ngModel)]="selectedBooking.passenger_phone" name="passenger_phone" />
+      </div>
+
+      <!-- Ref NUM -->
+      <div class="form-row" *ngIf="isEditMode">
+        <label>Ref NUM</label>
+        <input type="text" [(ngModel)]="selectedBooking.booking_reference" name="booking_reference" />
+      </div>
+
+      <!-- Route -->
+      <div class="form-row">
+        <label>Route</label>
+        <input type="text" [(ngModel)]="selectedBooking.route" name="route" required />
+      </div>
+
+      <!-- Date & Time -->
+      <div class="form-row">
+        <label>Date & Time</label>
+        <input type="datetime-local" [(ngModel)]="selectedBooking.departure_datetime" name="departure_datetime" required />
+      </div>
+
+      <!-- Bus Type -->
+      <div class="form-row">
+        <label>Bus Type</label>
+        <select [(ngModel)]="selectedBooking.bus_type" name="bus_type">
+          <option value="normal">Normal</option>
+          <option value="semi-luxury">Semi-Luxury</option>
+          <option value="luxury">Luxury</option>
+        </select>
+      </div>
+
+      <!-- Seat No -->
+      <div class="form-row">
+        <label>Seat No (comma separated)</label>
+        <input type="text" [(ngModel)]="formSeatNumbers" name="formSeatNumbers" required />
+      </div>
+
+      <!-- Total Fare -->
+      <div class="form-row">
+        <label>Total Fare</label>
+        <input type="number" [(ngModel)]="selectedBooking.total_fare" name="total_fare" required min="0" step="0.01" />
+      </div>
+
+      <!-- Payment Status -->
+      <div class="form-row" *ngIf="isEditMode">
+        <label>Payment Status</label>
+        <select [(ngModel)]="selectedBooking.payment_status" name="payment_status">
+          <option value="paid">Paid</option>
+          <option value="pending">Pending</option>
+          <option value="failed">Failed</option>
+          <option value="refunded">Refunded</option>
+          <option value="collect_on_bus">Collect on Bus</option>
+        </select>
+      </div>
+
+      <!-- Booking Status -->
+      <div class="form-row" *ngIf="isEditMode">
+        <label>Booking Status</label>
+        <select [(ngModel)]="selectedBooking.booking_status" name="booking_status">
+          <option value="confirmed">Confirmed</option>
+          <option value="pending">Pending</option>
+          <option value="cancelled">Cancelled</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+
+      <div class="form-actions full-width">
+        <button type="button" (click)="closeEditModal()">Cancel</button>
+        <button type="submit" [disabled]="!isBusBookingFormValid()">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Notification Panel -->
+<app-notification-panel *ngIf="showNotificationPanel" (close)="closeNotificationPanel()"></app-notification-panel>

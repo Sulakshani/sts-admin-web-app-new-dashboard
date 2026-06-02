@@ -1,0 +1,78 @@
+<div class="seat-selector-container">
+  <div class="seat-legend">
+    <div class="legend-item">
+      <div class="legend-box selected"></div>
+      <span>Seat exists</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-box empty"></div>
+      <span>Empty space</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-indicator window"></div>
+      <span>Window position</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-indicator aisle"></div>
+      <span>Aisle position</span>
+    </div>
+  </div>
+
+  <div class="bus-layout">
+    <div class="row-container" *ngFor="let row of seatMap; let rowIndex = index">
+      <div class="row-label">{{ getRowLabel(rowIndex) }}</div>
+
+      <div class="seats-row">
+        <!-- Left side (3 seats) -->
+        <div class="seat-group left-side">
+          <div
+            *ngFor="let seat of [0, 1, 2]; let seatIndex = index"
+            class="seat-box"
+            [class.selected]="isSeatSelected(rowIndex, seatIndex)"
+            [class.window]="seatIndex === 0"
+            [class.aisle]="seatIndex === 2"
+            (click)="toggleSeat(rowIndex, seatIndex)">
+            <div class="seat-number" *ngIf="isSeatSelected(rowIndex, seatIndex)">
+              {{ getActualSeatNumber(rowIndex, seatIndex) }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Aisle -->
+        <div class="aisle-space">
+          <span class="aisle-label">AISLE</span>
+        </div>
+
+        <!-- Right side (3 seats) -->
+        <div class="seat-group right-side">
+          <div
+            *ngFor="let seat of [3, 4, 5]; let idx = index"
+            class="seat-box"
+            [class.selected]="isSeatSelected(rowIndex, seat)"
+            [class.window]="seat === 5"
+            [class.aisle]="seat === 3"
+            (click)="toggleSeat(rowIndex, seat)">
+            <div class="seat-number" *ngIf="isSeatSelected(rowIndex, seat)">
+              {{ getActualSeatNumber(rowIndex, seat) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row controls just after last row -->
+    <div class="row-controls">
+      <button type="button" class="row-btn remove-btn" (click)="removeRow()" [disabled]="totalRows <= 1" title="Remove row">
+        <i class="pi pi-minus"></i>
+      </button>
+      <span class="row-count">{{ totalRows }} rows</span>
+      <button type="button" class="row-btn add-btn" (click)="addRow()" title="Add row">
+        <i class="pi pi-plus"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="seat-summary">
+    Total seats configured: <strong>{{ getTotalSeats() }}</strong>
+  </div>
+</div>

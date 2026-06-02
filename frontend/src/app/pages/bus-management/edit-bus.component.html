@@ -1,0 +1,87 @@
+<div class="edit-bus-page" *ngIf="bus as b">
+  <nav class="back-nav" (click)="goBack()" aria-label="Back">
+    <span class="arrow">‹</span>
+    <span class="label">Back</span>
+  </nav>
+  <div class="page-header">
+    <h2>Edit Bus Details</h2>
+  </div>
+
+  <form class="bus-form" (ngSubmit)="save()">
+    <div class="form-row">
+      <label>Bus Number<span class="req">*</span></label>
+      <input 
+        type="text" 
+        [(ngModel)]="b.bus_number" 
+        name="bus_number" 
+        placeholder="e.g., ND1234"
+        required 
+        #busNumberModel="ngModel"
+        (input)="onBusNumberChange()"
+        [class.error-input]="validationErrors.bus_number && (busNumberModel.dirty || busNumberModel.touched || isFormSubmitted)"
+      />
+      <small class="error" *ngIf="validationErrors.bus_number && (busNumberModel.dirty || busNumberModel.touched || isFormSubmitted)">
+        {{ validationErrors.bus_number }}
+      </small>
+    </div>
+
+    <div class="form-row">
+      <label>Total Seats<span class="req">*</span></label>
+      <input 
+        type="number" 
+        [(ngModel)]="b.total_seats" 
+        name="total_seats" 
+        placeholder="e.g., 50"
+        min="1" 
+        max="54" 
+        required 
+        #totalSeatsModel="ngModel"
+        (input)="onTotalSeatsChange()"
+        [class.error-input]="validationErrors.total_seats && (totalSeatsModel.dirty || totalSeatsModel.touched || isFormSubmitted)"
+      />
+      <small class="error" *ngIf="validationErrors.total_seats && (totalSeatsModel.dirty || totalSeatsModel.touched || isFormSubmitted)">
+        {{ validationErrors.total_seats }}
+      </small>
+    </div>
+
+    <div class="form-row">
+      <label>Type</label>
+      <select [(ngModel)]="b.bus_type" name="bus_type">
+        <option value="AC">AC</option>
+        <option value="Non-AC">Non-AC</option>
+        <option value="Luxury">Luxury</option>
+      </select>
+    </div>
+
+    <div class="form-row inline">
+      <label class="checkbox">
+        <input type="checkbox" [ngModel]="b.status.toLowerCase() === 'active'" (ngModelChange)="b.status = $event ? 'Active' : 'Inactive'" name="status" />
+        <span>Active</span>
+      </label>
+    </div>
+
+    <div class="form-row">
+      <label>Custom Route Name<span class="req">*</span></label>
+      <input 
+        type="text" 
+        [(ngModel)]="b.custom_route_name" 
+        name="custom_route_name" 
+        placeholder="e.g., RT001"
+        required 
+        #routeNameModel="ngModel"
+        (input)="onCustomRouteNameChange()"
+        [class.error-input]="validationErrors.custom_route_name && (routeNameModel.dirty || routeNameModel.touched || isFormSubmitted)"
+      />
+      <small class="error" *ngIf="validationErrors.custom_route_name && (routeNameModel.dirty || routeNameModel.touched || isFormSubmitted)">
+        {{ validationErrors.custom_route_name }}
+      </small>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn secondary" (click)="cancel()">Cancel</button>
+      <button type="submit" class="btn primary" [disabled]="isSubmitting || !isFormValid()">
+        {{ isSubmitting ? 'Saving...' : 'Save' }}
+      </button>
+    </div>
+  </form>
+</div>

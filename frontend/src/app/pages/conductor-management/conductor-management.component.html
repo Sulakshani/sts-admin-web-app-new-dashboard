@@ -1,0 +1,318 @@
+<div class="conductor-container">
+  <div class="top-navigation-row">
+    <div class="app-branding">
+      <div class="logo-circle">
+        <i class="fas fa-user-tie"></i>
+      </div>
+      <span class="app-name">BusLounge</span>
+    </div>
+    <app-navbar></app-navbar>
+    <div class="header-actions">
+      <button class="icon-btn notification-btn" (click)="toggleNotificationPanel()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+        </svg>
+        <span *ngIf="notificationService.totalPendingCount > 0" class="notification-badge">{{ notificationService.totalPendingCount }}</span>
+      </button>
+      <div class="profile-dropdown-container">
+        <button class="icon-btn profile-btn" (click)="toggleProfileMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </button>
+        <div class="dropdown-menu" *ngIf="showProfileMenu">
+          <a routerLink="/settings" class="dropdown-item">
+            <i class="fas fa-cog"></i> Profile setting
+          </a>
+          <a (click)="logout()" class="dropdown-item">
+            <i class="fas fa-sign-out-alt"></i> Log out
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div class="page-header">
+      <div class="header-content">
+        <h2>Conductor Management</h2>
+      </div>
+      <div class="header-actions">
+        <button class="add-conductor-btn" (click)="addConductor()">Add Conductor</button>
+      </div>
+    </div>
+
+      <div class="stats-grid">
+        <div class="stat-card total-conductors">
+          <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ getTotalConductors() }}</div>
+            <div class="stat-title">Total Conductors</div>
+          </div>
+        </div>
+        <div class="stat-card active-conductors">
+          <div class="stat-icon">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22,4 12,14.01 9,11.01"></polyline></svg>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ getActiveCount() }}</div>
+            <div class="stat-title">Active</div>
+          </div>
+        </div>
+        <div class="stat-card inactive-conductors">
+          <div class="stat-icon">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-pause-circle"><circle cx="12" cy="12" r="10"></circle><line x1="10" y1="15" x2="10" y2="9"></line><line x1="14" y1="15" x2="14" y2="9"></line></svg>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ getInactiveCount() }}</div>
+            <div class="stat-title">Inactive</div>
+          </div>
+        </div>
+        <div class="stat-card average-experience">
+          <div class="stat-icon">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-award"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21,13.89 7,23 12,20 17,23 15.79,13.88"></polyline></svg>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ getAverageExperience() }}</div>
+            <div class="stat-title">Avg Experience (yrs)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-section">
+        <div class="chart">
+          <div class="chart-header">
+            <h3>Status Overview</h3>
+          <p>Distribution of active vs inactive conductors</p>
+          </div>
+        <div class="pie-chart">
+          <div class="pie-circle" [style.background]="getPieChartGradient()"></div>
+        </div>
+        <div class="pie-legend">
+          <div class="legend-item">
+            <span class="legend-color" style="background: var(--active);"></span>
+            <span class="legend-label">Active: {{ getFilteredActiveCount() }}</span>
+          </div>
+          <div class="legend-item">
+          <span class="legend-color" style="background: var(--inactive);"></span>
+          <span class="legend-label">Inactive: {{ getFilteredInactiveCount() }}</span>
+          </div>
+        </div>
+        </div>
+
+        <div class="chart">
+          <div class="chart-header">
+            <h3>Experience Distribution</h3>
+            <p>Conductors by experience level</p>
+          </div>
+          <div class="bar-chart">
+            <canvas #barChartCanvas></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="left-section">
+          <div class="search-container">
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Search by name, NIC, phone, ID, or bus..."
+              [(ngModel)]="searchTerm"
+              (input)="onSearchChange()"
+            />
+            <button class="clear-search-btn" (click)="clearSearch()" *ngIf="searchTerm">×</button>
+          </div>
+
+          <div class="filter-container">
+            <select class="filter-select" [(ngModel)]="statusFilter" (change)="onStatusFilterChange()">
+              <option value="All">All Status</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+              <option value="Resigned">Resigned</option>
+            </select>
+          </div>
+
+          <button class="clear-filters-btn" (click)="clearFilters()" *ngIf="statusFilter !== 'All' || searchTerm">Clear Filters</button>
+        </div>
+
+        <div class="toolbar-actions">
+          <button class="export-btn" (click)="exportConductorsPdf()">Export Report (PDF)</button>
+        </div>
+      </div>
+
+      <table class="conductor-table">
+        <thead>
+          <tr>
+            <th (click)="onSort('id')" style="cursor: pointer;" title="Click to sort">
+              Conductor ID {{ getSortIcon('id') }}
+            </th>
+            <th (click)="onSort('name')" style="cursor: pointer;" title="Click to sort">
+              Conductor Name {{ getSortIcon('name') }}
+            </th>
+            <th>Contact</th>
+            <th>License Number</th>
+            <th (click)="onSort('license_expiry_date')" style="cursor: pointer;" title="Click to sort">
+              License Expire Date {{ getSortIcon('license_expiry_date') }}
+            </th>
+            <th (click)="onSort('experience_years')" style="cursor: pointer;" title="Click to sort">
+              Experience Yrs {{ getSortIcon('experience_years') }}
+            </th>
+            <th (click)="onSort('verification_status')" style="cursor: pointer;" title="Click to sort">
+              Verification {{ getSortIcon('verification_status') }}
+            </th>
+            <th>Verification Note</th>
+            <th (click)="onSort('status')" style="cursor: pointer;" title="Click to sort">
+              Status {{ getSortIcon('status') }}
+            </th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let conductor of filteredConductors">
+            <td>{{ conductor.id }}</td>
+            <td>{{ conductor.name }}</td>
+            <td>{{ conductor.contact_number }}</td>
+            <td>{{ conductor.license_number }}</td>
+            <td>{{ conductor.license_expiry_date | date:'shortDate' }}</td>
+            <td>{{ conductor.experience_years }}yrs</td>
+            <td>{{ conductor.verification_status }}</td>
+            <td>
+              <div *ngIf="conductor.verification_status?.toLowerCase() === 'approved' || conductor.verification_status?.toLowerCase() === 'verified'">
+                <div *ngIf="conductor.verification_notes && conductor.verification_notes.trim(); else noDocuments">
+                  <a [href]="conductor.verification_notes" target="_blank" class="document-link" title="Open document">
+                    <i class="fas fa-external-link-alt"></i> Document 1
+                  </a>
+                </div>
+                <ng-template #noDocuments>
+                  <span class="no-documents">No documents</span>
+                </ng-template>
+              </div>
+              <span *ngIf="conductor.verification_status?.toLowerCase() === 'rejected'" class="no-documents">-</span>
+              <span *ngIf="conductor.verification_status?.toLowerCase() === 'pending'" class="no-documents">Pending approval</span>
+            </td>
+            <td>
+              <span class="status-badge" [ngClass]="conductor.status.toLowerCase().replace(' ', '-')">
+                {{ conductor.status }}
+              </span>
+            </td>
+            <td class="actions-cell">
+              <i class="fas fa-edit action-icon edit-icon" (click)="updateConductor(conductor)" title="Update"></i>
+            </td>
+          </tr>
+        </tbody> 
+      </table>
+
+      <div class="no-results" *ngIf="filteredConductors.length === 0">
+        <p>No conductors found matching your criteria.</p>
+      </div>
+
+  <!-- Add Conductor Modal -->
+  <div class="add-conductor-modal" *ngIf="showAddConductorModal" (click)="closeAddConductorModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2>Add Conductor</h2>
+      <form (ngSubmit)="saveConductor()">
+        <div class="form-grid">
+          <!-- Left column -->
+          <div class="form-row">
+            <label>Conductor Name</label>
+            <input type="text" [(ngModel)]="newConductor.name" name="name" required />
+          </div>
+          <div class="form-row">
+            <label>Contact Num</label>
+            <input type="text" [(ngModel)]="newConductor.contact_number" name="contact_number" required />
+          </div>
+          <div class="form-row">
+            <label>License Number</label>
+            <input type="text" [(ngModel)]="newConductor.license_number" name="license_number" required />
+          </div>
+          <div class="form-row">
+            <label>Experience (Years)</label>
+            <input type="number" [(ngModel)]="newConductor.experience_years" name="experience_years" required min="0" />
+          </div>
+
+          <!-- Right column -->
+          <div class="form-row">
+            <label>License Expiry</label>
+            <input type="date" [(ngModel)]="newConductor.license_expiry_date" name="license_expiry_date" required />
+          </div>
+          <div class="form-row">
+            <label>Hire Date</label>
+            <input type="date" [(ngModel)]="newConductor.hire_date" name="hire_date" required />
+          </div>
+          <div class="form-row">
+            <label>Verification Note</label>
+            <textarea [(ngModel)]="newConductor.verification_notes" name="verification_notes" rows="2" placeholder="Enter verification notes..."></textarea>
+          </div>
+          <div class="form-row">
+            <label>Status</label>
+            <div style="display: flex; align-items: center; height: 38px;">
+              <input type="checkbox" [ngModel]="newConductor.status.toLowerCase() === 'active'" (ngModelChange)="newConductor.status = $event ? 'Active' : 'Inactive'" name="status" style="width: auto; margin-right: 8px;" /> Active
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" (click)="closeAddConductorModal()">Cancel</button>
+          <button type="submit" [disabled]="!isConductorFormValid()">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Conductor Modal -->
+  <div class="add-conductor-modal" *ngIf="showEditConductorModal" (click)="closeEditConductorModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2>Edit Conductor</h2>
+      <form (ngSubmit)="saveEditConductor()" *ngIf="selectedConductor">
+        <div class="form-grid">
+          <!-- Left column -->
+          <div class="form-row">
+            <label>Conductor Name</label>
+            <input type="text" [(ngModel)]="selectedConductor.name" name="edit_name" required />
+          </div>
+          <div class="form-row">
+            <label>Contact Num</label>
+            <input type="text" [(ngModel)]="selectedConductor.contact_number" name="edit_contact_number" required />
+          </div>
+          <div class="form-row">
+            <label>License Number</label>
+            <input type="text" [(ngModel)]="selectedConductor.license_number" name="edit_license_number" required />
+          </div>
+          <div class="form-row">
+            <label>Experience (Years)</label>
+            <input type="number" [(ngModel)]="selectedConductor.experience_years" name="edit_experience_years" required min="0" />
+          </div>
+
+          <!-- Right column -->
+          <div class="form-row">
+            <label>License Expiry</label>
+            <input type="date" [(ngModel)]="selectedConductor.license_expiry_date" name="edit_license_expiry_date" required />
+          </div>
+          <div class="form-row">
+            <label>Hire Date</label>
+            <input type="date" [(ngModel)]="selectedConductor.hire_date" name="edit_hire_date" required />
+          </div>
+          <div class="form-row">
+            <label>Verification Note</label>
+            <textarea [(ngModel)]="selectedConductor.verification_notes" name="edit_verification_notes" rows="2" placeholder="Enter verification notes..."></textarea>
+          </div>
+          <div class="form-row">
+            <label>Status</label>
+            <div style="display: flex; align-items: center; height: 38px;">
+              <input type="checkbox" [ngModel]="selectedConductor.status.toLowerCase() === 'active'" (ngModelChange)="selectedConductor.status = $event ? 'Active' : 'Inactive'" name="edit_status" style="width: auto; margin-right: 8px;" /> Active
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" (click)="closeEditConductorModal()">Cancel</button>
+          <button type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Notification Panel -->
+<app-notification-panel *ngIf="showNotificationPanel" (close)="closeNotificationPanel()"></app-notification-panel>
+

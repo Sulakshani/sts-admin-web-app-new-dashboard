@@ -1,0 +1,35 @@
+<nav class="navbar">
+  <div class="nav-items">
+    <ng-container *ngFor="let item of menuItems">
+      <!-- Regular Menu Item -->
+      <a *ngIf="!item.children" 
+         [routerLink]="item.route" 
+         class="nav-item" 
+         [class.active]="isActive(item.route)">
+        <i [class]="item.icon"></i>
+        <span>{{ item.label }}</span>
+        <span *ngIf="item.badge" class="badge">{{ item.badge }}</span>
+      </a>
+
+      <!-- Dropdown Menu Item -->
+      <div *ngIf="item.children" class="nav-item dropdown-trigger" 
+           [class.active]="isActive(item.route) || activeDropdown === item.label"
+           (click)="toggleDropdown(item.label)">
+        <i [class]="item.icon"></i>
+        <span>{{ item.label }}</span>
+        <span *ngIf="item.badge" class="badge">{{ item.badge }}</span>
+        <i class="fas fa-chevron-down ml-1" style="font-size: 0.7rem;"></i>
+        
+        <div class="dropdown-menu" *ngIf="activeDropdown === item.label">
+          <a *ngFor="let child of item.children" 
+             [routerLink]="child.route" 
+             routerLinkActive="active"
+             [routerLinkActiveOptions]="{ exact: true }"
+             class="dropdown-item">
+            {{ child.label }}
+          </a>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</nav>
