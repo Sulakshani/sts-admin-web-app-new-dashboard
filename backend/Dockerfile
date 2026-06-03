@@ -18,10 +18,6 @@ FROM alpine:latest
 
 RUN apk --no-cache add ca-certificates tzdata
 
-# Choreo requires UID 10014
-RUN addgroup -g 10014 choreo && \
-    adduser -D -u 10014 -G choreo choreouser
-
 WORKDIR /app
 COPY --from=builder /app/server /app/server
 
