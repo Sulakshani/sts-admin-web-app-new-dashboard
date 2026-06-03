@@ -10,6 +10,8 @@ import (
 
 const defaultApprovalNotificationPhone = "94715342627"
 
+var defaultApprovalNotificationPhones = []string{"94715342627", "94772945875"}
+
 type approvalSMSNotifier interface {
 	SendApprovalRequestNotification(recipient, requestType string, details ...string) error
 	SendApprovalDecisionNotification(recipient, requestType, decision string, details ...string) error
@@ -36,6 +38,36 @@ func normalizeApprovalNotificationPhone(phone string) string {
 	return phone
 }
 
+func normalizeApprovalNotificationPhones(phones string) []string {
+	phoneList := strings.FieldsFunc(phones, func(r rune) bool {
+		return r == ',' || r == ';'
+	})
+
+	if len(phoneList) == 0 {
+		return append([]string(nil), defaultApprovalNotificationPhones...)
+	}
+
+	seen := make(map[string]struct{}, len(phoneList))
+	normalizedPhones := make([]string, 0, len(phoneList))
+	for _, phone := range phoneList {
+		normalizedPhone := normalizeApprovalNotificationPhone(phone)
+		if normalizedPhone == "" {
+			continue
+		}
+		if _, exists := seen[normalizedPhone]; exists {
+			continue
+		}
+		seen[normalizedPhone] = struct{}{}
+		normalizedPhones = append(normalizedPhones, normalizedPhone)
+	}
+
+	if len(normalizedPhones) == 0 {
+		return append([]string(nil), defaultApprovalNotificationPhones...)
+	}
+
+	return normalizedPhones
+}
+
 func ensurePendingApprovalStatus(status string) string {
 	if strings.TrimSpace(status) == "" {
 		return "pending"
@@ -54,15 +86,7 @@ func isApprovedStatus(status string) bool {
 
 func notifyApprovalRequest(requestType string, details ...string) {
 	cfg := loadApprovalNotificationConfig()
-	phoneList := strings.Split(cfg.ApprovalNotificationPhone, ",")
-
-	var recipients []string
-	for _, phone := range phoneList {
-		normalizedPhone := normalizeApprovalNotificationPhone(phone)
-		if normalizedPhone != "" {
-			recipients = append(recipients, normalizedPhone)
-		}
-	}
+	recipients := normalizeApprovalNotificationPhones(cfg.ApprovalNotificationPhone)
 
 	if len(recipients) == 0 {
 		log.Println("No valid recipients found for approval notification.")
