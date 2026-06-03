@@ -1,0 +1,9 @@
+.env
+.env.*
+*.exe
+*.log
+server
+booking-server.exe
+.git
+.idea
+.vscode

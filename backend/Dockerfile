@@ -23,9 +23,11 @@ RUN addgroup -g 10014 choreo && \
     adduser -D -u 10014 -G choreo choreouser
 
 WORKDIR /app
-COPY --from=builder /app/server .
+COPY --from=builder /app/server /app/server
+
+ENV PORT=8080
 
 USER 10014
-EXPOSE 8083
+EXPOSE 8080
 
-CMD ["./server"]
+CMD ["/app/server"]
