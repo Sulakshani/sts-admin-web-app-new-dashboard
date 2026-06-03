@@ -1,0 +1,11 @@
+schemaVersion: 1.2
+
+endpoints:
+  - name: backend-api
+    displayName: Backend API
+    service:
+      basePath: /
+      port: 8080
+    type: REST
+    networkVisibilities:
+      - Public
