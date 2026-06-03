@@ -42,3 +42,69 @@ paths:
           description: Login succeeded
         "401":
           description: Invalid credentials
+  /api/admin/auth/logout:
+    post:
+      summary: Admin logout
+      responses:
+        "200":
+          description: Logged out
+  /api/admin/auth/refresh:
+    post:
+      summary: Refresh access token
+      responses:
+        "200":
+          description: Token refreshed
+  /api/admin/auth/profile:
+    get:
+      summary: Get admin profile
+      responses:
+        "200":
+          description: Profile returned
+  /api/admin/auth/bootstrap-status:
+    get:
+      summary: Get bootstrap status
+      responses:
+        "200":
+          description: Bootstrap status returned
+  /api/admin/auth/forgot-password:
+    post:
+      summary: Request password reset
+      responses:
+        "200":
+          description: Reset requested
+  /api/admin/auth/verify-reset-token:
+    post:
+      summary: Verify reset token
+      responses:
+        "200":
+          description: Token verified
+  /api/admin/auth/reset-password:
+    post:
+      summary: Reset password
+      responses:
+        "200":
+          description: Password reset
+  /api/complaints:
+    get:
+      summary: List complaints
+      responses:
+        "200":
+          description: Complaints returned
+  /api/complaints/{id}:
+    get:
+      summary: Get complaint by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Complaint returned
+  /api/escalation/stats:
+    get:
+      summary: Get escalation stats
+      responses:
+        "200":
+          description: Stats returned
