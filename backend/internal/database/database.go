@@ -15,7 +15,8 @@ func Init(cfg *config.Config) {
 	var err error
 	DB, err = sql.Open("postgres", cfg.DatabaseURL)
 	if err != nil {
-		log.Fatalf("Error opening database connection: %v", err)
+		log.Printf("Error opening database connection: %v", err)
+		return
 	}
 
 	DB.SetMaxOpenConns(cfg.MaxConnections)
@@ -23,7 +24,8 @@ func Init(cfg *config.Config) {
 	DB.SetConnMaxLifetime(time.Duration(cfg.ConnMaxLifetime) * time.Second)
 
 	if err = DB.Ping(); err != nil {
-		log.Fatalf("Error connecting to the database: %v", err)
+		log.Printf("Error connecting to the database: %v", err)
+		return
 	}
 
 	log.Println("Successfully connected to the database")

@@ -22,17 +22,24 @@ func main() {
 	services.InitComplaintService(database.DB, cfg)
 
 	// Test Database connection
-	err := database.DB.Ping()
-	if err != nil {
+	dbConnected := false
+	if database.DB == nil {
+		log.Println("Database Connection Check: database handle is not available")
+	} else if err := database.DB.Ping(); err != nil {
 		log.Printf("Database Connection Check: %v", err)
 	} else {
+		dbConnected = true
 		log.Println("Database Connection Check: Successfully connected!")
 	}
 
 	// Initialize escalation scheduler (runs every hour)
-	escalationScheduler := services.NewEscalationScheduler(database.DB, cfg, 1*time.Hour)
-	escalationScheduler.Start()
-	log.Println("✅ Complaint escalation scheduler started (runs every 1 hour)")
+	if dbConnected {
+		escalationScheduler := services.NewEscalationScheduler(database.DB, cfg, 1*time.Hour)
+		escalationScheduler.Start()
+		log.Println("✅ Complaint escalation scheduler started (runs every 1 hour)")
+	} else {
+		log.Println("Skipping complaint escalation scheduler because the database is unavailable")
+	}
 
 	r := gin.Default()
 
