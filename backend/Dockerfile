@@ -23,7 +23,7 @@ COPY --from=builder /app/server /app/server
 
 ENV PORT=8080
 
-USER 10014
+USER 0
 EXPOSE 8080
 
 ENTRYPOINT ["/app/server"]
