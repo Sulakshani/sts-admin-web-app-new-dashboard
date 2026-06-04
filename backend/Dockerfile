@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM golang:1.23-alpine AS builder
+FROM golang:1.24-alpine AS builder
 
 WORKDIR /app
 
@@ -26,4 +26,4 @@ ENV PORT=8080
 USER 10014
 EXPOSE 8080
 
-CMD ["/app/server"]
+ENTRYPOINT ["/app/server"]
