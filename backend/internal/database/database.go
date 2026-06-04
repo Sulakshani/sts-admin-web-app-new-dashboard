@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"database/sql"
 	"log"
 	"sts-backend/internal/config"
@@ -23,7 +24,10 @@ func Init(cfg *config.Config) {
 	DB.SetMaxIdleConns(cfg.MaxIdleConnections)
 	DB.SetConnMaxLifetime(time.Duration(cfg.ConnMaxLifetime) * time.Second)
 
-	if err = DB.Ping(); err != nil {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err = DB.PingContext(ctx); err != nil {
 		log.Printf("Error connecting to the database: %v", err)
 		return
 	}
