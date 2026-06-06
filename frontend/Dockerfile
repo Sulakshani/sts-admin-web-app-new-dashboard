@@ -33,7 +33,8 @@ RUN addgroup -g 10014 choreo && \
     adduser -D -u 10014 -G choreo choreouser
 
 # Copy built Angular app from build stage
-COPY --from=build /app/dist/my-angular-app/browser /usr/share/nginx/html
+COPY --from=build /app/dist/my-angular-app /usr/share/nginx/html
+
 
 # Copy custom nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
