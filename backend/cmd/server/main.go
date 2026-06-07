@@ -62,6 +62,14 @@ func main() {
 		c.Next()
 	})
 
+	// Root endpoint
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "STS Admin Backend API is running",
+			"status": "ok",
+		})
+	})
+
 	// Basic health check
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{

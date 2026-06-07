@@ -6,6 +6,20 @@ info:
 servers:
   - url: /
 paths:
+  /:
+    get:
+      summary: API Root
+      responses:
+        "200":
+          description: Welcome message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: STS Admin Backend API is running
   /health:
     get:
       summary: Health check
