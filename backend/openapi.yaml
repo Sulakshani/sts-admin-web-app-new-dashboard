@@ -121,7 +121,21 @@ paths:
       summary: Get escalation stats
       responses:
         "200":
-          description: Stats returned  /api/admin/users/{id}:
+          description: Stats returned
+
+  /api/admin/users:
+    get:
+      summary: GET /api/admin/users
+      responses:
+        "200":
+          description: Success
+    post:
+      summary: POST /api/admin/users
+      responses:
+        "200":
+          description: Success
+
+  /api/admin/users/{id}:
     put:
       summary: PUT /api/admin/users/{id}
       parameters:
