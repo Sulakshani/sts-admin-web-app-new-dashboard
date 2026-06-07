@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, forkJoin, of } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 export interface BusNotification {
   id: string;
@@ -107,7 +108,7 @@ export type AllNotifications =
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
-  private readonly apiUrl = 'http://localhost:8083/api';
+  private readonly apiUrl = environment.apiUrl;
   private readonly _pendingBuses$ = new BehaviorSubject<BusNotification[]>([]);
   private readonly _pendingDrivers$ = new BehaviorSubject<DriverNotification[]>([]);
   private readonly _pendingConductors$ = new BehaviorSubject<ConductorNotification[]>([]);
