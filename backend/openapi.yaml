@@ -121,4 +121,678 @@ paths:
       summary: Get escalation stats
       responses:
         "200":
-          description: Stats returned
+          description: Stats returned  /api/admin/users/{id}:
+    put:
+      summary: PUT /api/admin/users/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+    delete:
+      summary: DELETE /api/admin/users/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/admin/access-controls/admin-users/{id}/permissions:
+    get:
+      summary: GET /api/admin/access-controls/admin-users/{id}/permissions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+    put:
+      summary: PUT /api/admin/access-controls/admin-users/{id}/permissions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/admin/access-controls/app-users/{id}/permissions:
+    get:
+      summary: GET /api/admin/access-controls/app-users/{id}/permissions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+    put:
+      summary: PUT /api/admin/access-controls/app-users/{id}/permissions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/lounges:
+    get:
+      summary: GET /api/lounges
+      responses:
+        "200":
+          description: Success
+    post:
+      summary: POST /api/lounges
+      responses:
+        "200":
+          description: Success
+  /api/lounges/pending:
+    get:
+      summary: GET /api/lounges/pending
+      responses:
+        "200":
+          description: Success
+  /api/lounges/{id}:
+    get:
+      summary: GET /api/lounges/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+    put:
+      summary: PUT /api/lounges/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+    delete:
+      summary: DELETE /api/lounges/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/lounges/{id}/verify:
+    put:
+      summary: PUT /api/lounges/{id}/verify
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/lounge-owners/pending:
+    get:
+      summary: GET /api/lounge-owners/pending
+      responses:
+        "200":
+          description: Success
+  /api/lounge-owners/{id}:
+    get:
+      summary: GET /api/lounge-owners/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/lounge-owners/{id}/verify:
+    put:
+      summary: PUT /api/lounge-owners/{id}/verify
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/buses:
+    get:
+      summary: GET /api/buses
+      responses:
+        "200":
+          description: Success
+    post:
+      summary: POST /api/buses
+      responses:
+        "200":
+          description: Success
+  /api/buses/pending:
+    get:
+      summary: GET /api/buses/pending
+      responses:
+        "200":
+          description: Success
+  /api/buses/{id}:
+    get:
+      summary: GET /api/buses/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+    put:
+      summary: PUT /api/buses/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/buses/{id}/verify:
+    put:
+      summary: PUT /api/buses/{id}/verify
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/bus-owners:
+    get:
+      summary: GET /api/bus-owners
+      responses:
+        "200":
+          description: Success
+    post:
+      summary: POST /api/bus-owners
+      responses:
+        "200":
+          description: Success
+  /api/bus-owners/pending:
+    get:
+      summary: GET /api/bus-owners/pending
+      responses:
+        "200":
+          description: Success
+  /api/bus-owners/{id}:
+    get:
+      summary: GET /api/bus-owners/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+    put:
+      summary: PUT /api/bus-owners/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+    delete:
+      summary: DELETE /api/bus-owners/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/bus-owners/{id}/verify:
+    put:
+      summary: PUT /api/bus-owners/{id}/verify
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/drivers:
+    get:
+      summary: GET /api/drivers
+      responses:
+        "200":
+          description: Success
+    post:
+      summary: POST /api/drivers
+      responses:
+        "200":
+          description: Success
+  /api/drivers/pending:
+    get:
+      summary: GET /api/drivers/pending
+      responses:
+        "200":
+          description: Success
+  /api/drivers/{id}:
+    get:
+      summary: GET /api/drivers/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+    put:
+      summary: PUT /api/drivers/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/drivers/{id}/verify:
+    put:
+      summary: PUT /api/drivers/{id}/verify
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/conductors:
+    get:
+      summary: GET /api/conductors
+      responses:
+        "200":
+          description: Success
+    post:
+      summary: POST /api/conductors
+      responses:
+        "200":
+          description: Success
+  /api/conductors/pending:
+    get:
+      summary: GET /api/conductors/pending
+      responses:
+        "200":
+          description: Success
+  /api/conductors/{id}:
+    get:
+      summary: GET /api/conductors/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+    put:
+      summary: PUT /api/conductors/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/conductors/{id}/verify:
+    put:
+      summary: PUT /api/conductors/{id}/verify
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/bookings:
+    get:
+      summary: GET /api/bookings
+      responses:
+        "200":
+          description: Success
+    post:
+      summary: POST /api/bookings
+      responses:
+        "200":
+          description: Success
+  /api/bookings/status:
+    get:
+      summary: GET /api/bookings/status
+      responses:
+        "200":
+          description: Success
+  /api/bookings/search:
+    get:
+      summary: GET /api/bookings/search
+      responses:
+        "200":
+          description: Success
+  /api/bookings/{id}:
+    get:
+      summary: GET /api/bookings/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+    put:
+      summary: PUT /api/bookings/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+    delete:
+      summary: DELETE /api/bookings/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/bookings/{id}/status:
+    put:
+      summary: PUT /api/bookings/{id}/status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/bookings/{id}/payment:
+    put:
+      summary: PUT /api/bookings/{id}/payment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/lounge-bookings:
+    get:
+      summary: GET /api/lounge-bookings
+      responses:
+        "200":
+          description: Success
+    post:
+      summary: POST /api/lounge-bookings
+      responses:
+        "200":
+          description: Success
+  /api/lounge-bookings/{id}:
+    get:
+      summary: GET /api/lounge-bookings/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+    put:
+      summary: PUT /api/lounge-bookings/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+    delete:
+      summary: DELETE /api/lounge-bookings/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/lounge-bookings/{id}/payment-status:
+    patch:
+      summary: PATCH /api/lounge-bookings/{id}/payment-status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/lounge-bookings/{id}/booking-status:
+    patch:
+      summary: PATCH /api/lounge-bookings/{id}/booking-status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/complaints/{id}/status:
+    put:
+      summary: PUT /api/complaints/{id}/status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/complaints/{id}/escalate:
+    post:
+      summary: POST /api/complaints/{id}/escalate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/complaints/{id}/escalation:
+    get:
+      summary: GET /api/complaints/{id}/escalation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/escalation/config:
+    get:
+      summary: GET /api/escalation/config
+      responses:
+        "200":
+          description: Success
+  /api/escalation/config/{category}:
+    get:
+      summary: GET /api/escalation/config/{category}
+      parameters:
+        - name: category
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/escalation/complaint/{id}:
+    get:
+      summary: GET /api/escalation/complaint/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/escalation/complaint/{id}/history:
+    get:
+      summary: GET /api/escalation/complaint/{id}/history
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/escalation/complaint/{id}/escalate:
+    post:
+      summary: POST /api/escalation/complaint/{id}/escalate
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/escalation/complaint/{id}/assign:
+    post:
+      summary: POST /api/escalation/complaint/{id}/assign
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/escalation/complaint/{id}/initialize:
+    post:
+      summary: POST /api/escalation/complaint/{id}/initialize
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/tv/broadcasts:
+    get:
+      summary: GET /api/tv/broadcasts
+      responses:
+        "200":
+          description: Success
+  /api/lounge-ads/lounge/{id}:
+    get:
+      summary: GET /api/lounge-ads/lounge/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+  /api/departures/lounge/{id}:
+    get:
+      summary: GET /api/departures/lounge/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
