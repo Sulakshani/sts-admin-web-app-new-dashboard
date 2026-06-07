@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Conductor } from '../models/conductor.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ConductorService {
-  private apiUrl = 'http://localhost:8083/api/conductors';
+  private apiUrl = `${environment.apiUrl}/conductors`;
   private readonly _conductors$ = new BehaviorSubject<Conductor[]>([]);
 
   readonly conductors$ = this._conductors$.asObservable();

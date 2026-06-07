@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Driver } from '../models/driver.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class DriverService {
-  private apiUrl = 'http://localhost:8083/api/drivers';
+  private apiUrl = `${environment.apiUrl}/drivers`;
   private readonly _drivers$ = new BehaviorSubject<Driver[]>([]);
 
   readonly drivers$ = this._drivers$.asObservable();

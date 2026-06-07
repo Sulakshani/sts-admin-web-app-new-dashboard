@@ -3,10 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap, switchMap, map } from 'rxjs/operators';
 import { BusBooking } from '../models/bus-booking.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class BusBookingService {
-  private readonly apiUrl = 'http://localhost:8083/api/bookings';
+  private readonly apiUrl = `${environment.apiUrl}/bookings`;
   private readonly _bookings$ = new BehaviorSubject<BusBooking[]>([]);
 
   readonly bookings$ = this._bookings$.asObservable();
