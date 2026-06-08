@@ -2,7 +2,7 @@
 .env.*
 *.exe
 *.log
-server
+/server
 booking-server.exe
 .git
 .idea
