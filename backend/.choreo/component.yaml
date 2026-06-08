@@ -1,12 +1,13 @@
-schemaVersion: 1.2
+schemaVersion: "1.2"
 
 endpoints:
-  - name: backend-api
-    displayName: Backend API
+  - name: sts-admin-backend-rest-endpoint
+    displayName: STS Admin Backend REST API
     service:
       basePath: /
       port: 8080
     type: REST
     networkVisibilities:
+      - Project
       - Public
     schemaFilePath: openapi.yaml
