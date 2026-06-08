@@ -810,3 +810,13 @@ paths:
       responses:
         "200":
           description: Success
+
+
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.choreo.dev/oauth2/token
+          scopes: {}
